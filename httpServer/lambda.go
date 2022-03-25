@@ -3,7 +3,7 @@ package httpServer
 import (
 	"log"
 
-	"github.com/apex/gateway/v2"
+	"github.com/apex/gateway"
 )
 
 func StartApexGateway(port string) {
