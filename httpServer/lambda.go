@@ -7,5 +7,6 @@ import (
 )
 
 func StartApexGateway(port string) {
+	log.Println("Starting lambda")
 	log.Fatal(gateway.ListenAndServe(port, nil))
 }
