@@ -8,19 +8,24 @@ import (
 )
 
 func Run() {
-	port := os.Getenv("PORT")
-	env := os.Getenv("ENV")
+	port := flag.Int("port", -1, "specify a port to use http rather than AWS Lambda")
 	flag.Parse()
+	env := os.Getenv("ENV")
+
+	if *port == -1 {
+		panic("SPECIFY PORT")
+	}
+	portStr := fmt.Sprintf(":%d", *port)
 
 	animal.InitAnimalRoutes()
 
 	fmt.Println("Starting server")
 	if env == "dev" {
 		fmt.Println("Starting http")
-		StartHttp(port)
+		StartHttp(portStr)
 	} else {
 		fmt.Println("Starting lambda")
-		StartApexGateway(port)
+		StartApexGateway(portStr)
 	}
 
 }
