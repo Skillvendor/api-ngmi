@@ -5,5 +5,6 @@ import (
 )
 
 func InitAnimalRoutes() {
+	http.HandleFunc("/", MyFunc)
 	http.HandleFunc("/api/hello", MyFunc)
 }
