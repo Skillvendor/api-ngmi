@@ -22,3 +22,15 @@ func MyFunc(w http.ResponseWriter, r *http.Request) {
 	}
 	// w.Write([]byte(myAnimal.Owner[0].Name))
 }
+
+func MyFunc2(w http.ResponseWriter, r *http.Request) {
+	log.Println("Calling animal")
+	myAnimal := Human{Name: "dorel", Age: 41}
+
+	err := json.NewEncoder(w).Encode(myAnimal)
+
+	if err != nil {
+		log.Println("Error loading .env file", err)
+	}
+	// w.Write([]byte(myAnimal.Owner[0].Name))
+}
