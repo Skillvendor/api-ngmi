@@ -24,7 +24,7 @@ func MyFunc(w http.ResponseWriter, r *http.Request) {
 }
 
 func MyFunc2(w http.ResponseWriter, r *http.Request) {
-	log.Println("Calling animal")
+	log.Println("Calling animal2")
 	myAnimal := Human{Name: "dorel", Age: 41}
 
 	err := json.NewEncoder(w).Encode(myAnimal)
