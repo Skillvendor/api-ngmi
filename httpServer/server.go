@@ -2,7 +2,7 @@ package httpServer
 
 import (
 	"fmt"
-	"go-rarity/animal"
+	"go-rarity/collection"
 	"os"
 )
 
@@ -10,7 +10,7 @@ func Run() {
 	port := os.Getenv("PORT")
 	env := os.Getenv("ENV")
 
-	animal.InitAnimalRoutes()
+	collection.InitAnimalRoutes()
 
 	fmt.Println("Starting server")
 	if env == "dev" {
