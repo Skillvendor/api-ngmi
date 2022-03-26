@@ -4,8 +4,8 @@ import (
 	"net/http"
 )
 
-func InitAnimalRoutes() {
-	http.HandleFunc("/api/hello", MyFunc)
-	http.HandleFunc("/api/collection/create", CreateCollection)
-	http.HandleFunc("/api/collection/all", GetAllCollections)
+func InitRoutes(mux *http.ServeMux) {
+	mux.HandleFunc("/api/hello", MyFunc)
+	mux.HandleFunc("/api/collection/create", CreateCollection)
+	mux.HandleFunc("/api/collection/all", GetAllCollections)
 }

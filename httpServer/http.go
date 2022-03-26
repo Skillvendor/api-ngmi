@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func StartHttp(port string) {
-	log.Fatal(http.ListenAndServe(port, nil))
+func StartHttp(port string, handler http.Handler) {
+	log.Fatal(http.ListenAndServe(port, handler))
 }
