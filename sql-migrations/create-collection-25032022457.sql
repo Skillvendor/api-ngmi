@@ -7,6 +7,9 @@ CREATE TABLE collections (
   mint_time timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   logos jsonb,
   research jsonb,
+  report_type int,
+  tier int,
+  published boolean DEFAULT FALSE,
   name text,
   description text
 );

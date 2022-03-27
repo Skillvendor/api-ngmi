@@ -8,7 +8,6 @@ import (
 )
 
 func CreateCollection(w http.ResponseWriter, r *http.Request) {
-	log.Println("HERE")
 	switch r.Method {
 	case "POST":
 		myCollection := models.Collection{}
@@ -18,6 +17,7 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error encoding collection", err)
 		}
+		myCollection.Published = true
 
 		log.Println("ENCODED", myCollection)
 
@@ -33,10 +33,40 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetAllCollections(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.GetAllCollections())
+func DeleteCollection(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "DELETE":
+		myCollection := models.Collection{}
+
+		err := json.NewDecoder(r.Body).Decode(&myCollection)
+
+		if err != nil {
+			log.Println("Error encoding collection", err)
+		}
+
+		json.NewEncoder(w).Encode(models.DeleteCollectionById(int(myCollection.Id)))
+	default:
+		w.Write([]byte("Come on man... delete method and an id"))
+	}
 }
 
-func MyFunc(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("HELLO"))
+func ApproveReview(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		myCollection := models.Collection{}
+
+		err := json.NewDecoder(r.Body).Decode(&myCollection)
+
+		if err != nil {
+			log.Println("Error encoding collection", err)
+		}
+
+		json.NewEncoder(w).Encode(models.ApproveReview(int(myCollection.Id)))
+	default:
+		w.Write([]byte("Come on man... post method and an id"))
+	}
+}
+
+func GetAllCollections(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(models.GetAllCollections())
 }

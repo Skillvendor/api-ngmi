@@ -5,6 +5,18 @@ import (
 	"log"
 )
 
+type ReportType int64
+
+const (
+	NFT ReportType = 0
+)
+
+type Tier int64
+
+const (
+	Free Tier = 0
+)
+
 type SocialMedia struct {
 	DiscordUrl string
 	TwitterUrl string
@@ -18,6 +30,7 @@ type MintDetails struct {
 }
 
 type Collection struct {
+	Id          int64       `pg:"id"`
 	Name        string      `pg:"name"`
 	Description string      `pg:"description"`
 	Socials     SocialMedia `pg:"socials"`
@@ -25,6 +38,9 @@ type Collection struct {
 	Logos       []string    `pg:"logos"`
 	Research    []string    `pg:"research"`
 	MintInfo    MintDetails `pg:"mint_info"`
+	ReportType  ReportType  `pg:"report_type"`
+	Tier        Tier        `pg:"tier"`
+	Published   bool        `pg:"published"`
 }
 
 var TableName = "collections"
@@ -45,4 +61,26 @@ func GetAllCollections() []Collection {
 	}
 
 	return got
+}
+
+func DeleteCollectionById(id int) bool {
+	_, err := dbConn.DB.Model(&Collection{}).Where("Id = ?", id).Delete()
+
+	if err != nil {
+		log.Println("Can't delete collection", err)
+		return false
+	}
+
+	return true
+}
+
+func ApproveReview(id int) bool {
+	_, err := dbConn.DB.Model(&Collection{}).Set("published = true").Where("Id = ?", id).Update()
+
+	if err != nil {
+		log.Println("Can't publish collection", err)
+		return false
+	}
+
+	return true
 }
