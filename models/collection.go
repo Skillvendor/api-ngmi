@@ -52,6 +52,13 @@ func (collection *Collection) Save() {
 	}
 }
 
+func (collection *Collection) Find() {
+	err := dbConn.DB.Model(collection).Where("Id = ?", collection.Id).First()
+	if err != nil {
+		log.Println("Can't insert", err)
+	}
+}
+
 func GetAllCollections() []Collection {
 	got := []Collection{}
 

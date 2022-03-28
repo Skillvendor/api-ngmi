@@ -2,7 +2,6 @@ package httpServer
 
 import (
 	"fmt"
-	"go-rarity/collection"
 	"net/http"
 	"os"
 
@@ -17,7 +16,7 @@ func Run() {
 
 	handler := cors.Default().Handler(mux)
 
-	collection.InitRoutes(mux)
+	InitRoutes(mux)
 
 	fmt.Println("Starting server")
 	if env == "dev" {

@@ -6,9 +6,13 @@ require (
 	github.com/apex/gateway v1.1.2 // indirect
 	github.com/apex/gateway/v2 v2.0.0 // indirect
 	github.com/aws/aws-lambda-go v1.17.0 // indirect
+	github.com/aws/aws-sdk-go v1.43.26 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.16.1 // indirect
+	github.com/aws/smithy-go v1.11.2 // indirect
 	github.com/go-pg/pg/v10 v10.10.6 // indirect
 	github.com/go-pg/zerochecker v0.2.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/cors v1.8.2 // indirect
@@ -19,6 +23,6 @@ require (
 	github.com/vmihailenco/tagparser v0.1.2 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/sys v0.0.0-20210923061019-b8560ed6a9b7 // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	mellium.im/sasl v0.2.1 // indirect
 )
