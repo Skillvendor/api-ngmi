@@ -26,6 +26,10 @@ type SignedUrlResp struct {
 	Key string
 }
 
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
 func generateStr(n int) string {
 	var chars = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0987654321")
 	str := make([]rune, n)

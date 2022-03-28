@@ -30,7 +30,7 @@ type MintDetails struct {
 }
 
 type Collection struct {
-	Id          int64       `pg:"id"`
+	Id          int         `pg:"id"`
 	Name        string      `pg:"name"`
 	Description string      `pg:"description"`
 	Socials     SocialMedia `pg:"socials"`
