@@ -56,7 +56,7 @@ func GetCollection(w http.ResponseWriter, r *http.Request) {
 
 func DeleteCollection(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
-	case "DELETE":
+	case "POST":
 		myCollection := models.Collection{}
 
 		err := json.NewDecoder(r.Body).Decode(&myCollection)
