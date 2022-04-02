@@ -70,6 +70,17 @@ func GetAllCollections() []Collection {
 	return got
 }
 
+func GetPublishedCollections() []Collection {
+	got := []Collection{}
+
+	err := dbConn.DB.Model(&got).Where("published = ?", true).Select()
+	if err != nil {
+		log.Println("Can't retrieve collections", err)
+	}
+
+	return got
+}
+
 func DeleteCollectionById(id int) bool {
 	_, err := dbConn.DB.Model(&Collection{}).Where("Id = ?", id).Delete()
 

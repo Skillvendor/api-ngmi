@@ -17,7 +17,7 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error encoding collection", err)
 		}
-		myCollection.Published = true
+		myCollection.Published = false
 
 		myCollection.Save()
 
@@ -86,6 +86,10 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 	default:
 		w.Write([]byte("Come on man... post method and an id"))
 	}
+}
+
+func GetPublishedCollections(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(models.GetPublishedCollections())
 }
 
 func GetAllCollections(w http.ResponseWriter, r *http.Request) {
