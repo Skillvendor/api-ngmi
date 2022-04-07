@@ -14,9 +14,9 @@ func Run() {
 
 	mux := http.NewServeMux()
 
-	handler := cors.Default().Handler(mux)
-
 	InitRoutes(mux)
+
+	handler := cors.Default().Handler(mux)
 
 	fmt.Println("Starting server")
 	if env == "dev" {
