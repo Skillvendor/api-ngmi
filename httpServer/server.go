@@ -16,7 +16,20 @@ func Run() {
 
 	InitRoutes(mux)
 
-	handler := cors.Default().Handler(mux)
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{
+			"http://localhost:3001",
+			"https://rarity-admin-dev.netlify.app",
+			"https://rarity-admin-prod.netlify.app",
+			"https://magic-carpet-dev.netlify.app",
+			"https://magic-carpet.netlify.app"},
+		AllowCredentials: true,
+		AllowedHeaders:   []string{"Authorization", "Content-Type"},
+		// Enable Debugging for testing, consider disabling in production
+		Debug: env != "prod",
+	})
+
+	handler := c.Handler(mux)
 
 	fmt.Println("Starting server")
 	if env == "dev" {
