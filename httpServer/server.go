@@ -22,7 +22,9 @@ func Run() {
 			"https://rarity-admin-dev.netlify.app",
 			"https://rarity-admin-prod.netlify.app",
 			"https://magic-carpet-dev.netlify.app",
-			"https://magic-carpet.netlify.app"},
+			"https://magic-carpet.netlify.app",
+			"http://local.magic-carpet-admin.com:3001",
+			"https://local.magic-carpet-admin.com:3001"},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		// Enable Debugging for testing, consider disabling in production
