@@ -58,7 +58,7 @@ func GetSignedUrl() SignedUrlResp {
 
 	// Prepare the S3 request so a signature can be generated
 	sess := s3.New(session.New(&aws.Config{
-		// Region:      aws.String(os.Getenv("AWS_REGION_CARPET")),
+		Region:      aws.String(os.Getenv("AWS_REGION_CARPET")),
 		Credentials: credentials.NewStaticCredentials(awsKey, awsSecret, ""),
 	}))
 
