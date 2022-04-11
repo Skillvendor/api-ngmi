@@ -46,7 +46,7 @@ func GetCollection(w http.ResponseWriter, r *http.Request) {
 
 		myCollection.Find()
 
-		err = json.NewEncoder(w).Encode(myCollection)
+		err = json.NewEncoder(w).Encode(collectionService.TransformToS3Urls(myCollection))
 
 		if err != nil {
 			log.Println("ERROR Encoding", err)
