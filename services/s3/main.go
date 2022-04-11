@@ -1,4 +1,4 @@
-package s3service
+package s3
 
 import (
 	"fmt"
@@ -39,7 +39,7 @@ func generateStr(n int) string {
 	return string(str)
 }
 
-func GetSignedUrl() SignedUrlResp {
+func GetSignedUploadUrl() SignedUrlResp {
 	// Load the bucket name
 	s3Bucket := os.Getenv("S3_BUCKET")
 	if s3Bucket == "" {
@@ -82,4 +82,57 @@ func GetSignedUrl() SignedUrlResp {
 		Url: url,
 		Key: key,
 	}
+}
+
+func GetSignedReadUrl(key string) (string, error) {
+	s3Bucket := os.Getenv("S3_BUCKET")
+	if s3Bucket == "" {
+		log.Fatal("an s3 bucket was unable to be loaded from env vars")
+	}
+
+	awsKey := os.Getenv("AWS_ACCESS_KEY_ID_CARPET")
+	if s3Bucket == "" {
+		log.Fatal("no s3 key")
+	}
+
+	awsSecret := os.Getenv("AWS_SECRET_ACCESS_KEY_CARPET")
+	if s3Bucket == "" {
+		log.Fatal("no s3 key")
+	}
+
+	svc := s3.New(session.New(&aws.Config{
+		Region:      aws.String(os.Getenv("AWS_REGION_CARPET")),
+		Credentials: credentials.NewStaticCredentials(awsKey, awsSecret, ""),
+	}))
+
+	params := &s3.GetObjectInput{
+		Bucket: aws.String(s3Bucket),
+		Key:    aws.String(key),
+	}
+
+	req, _ := svc.GetObjectRequest(params)
+
+	url, err := req.Presign(15 * time.Minute) // Set link expiration time
+	if err != nil {
+		log.Fatal("[AWS GET LINK]:", params, err)
+	}
+
+	return url, err
+}
+
+func GetPublicReadUrl(key string) string {
+	region := os.Getenv("AWS_REGION_CARPET")
+	if region == "" {
+		log.Fatal("an s3 bucket was unable to be loaded from env vars")
+	}
+
+	s3Bucket := os.Getenv("S3_BUCKET")
+	if s3Bucket == "" {
+		log.Fatal("an s3 bucket was unable to be loaded from env vars")
+	}
+
+	url := "https://%s.s3.%s.amazonaws.com/%s"
+	url = fmt.Sprintf(url, s3Bucket, region, key)
+
+	return url
 }

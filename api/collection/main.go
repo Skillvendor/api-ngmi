@@ -3,6 +3,8 @@ package collection
 import (
 	"encoding/json"
 	"go-rarity/models"
+	collectionService "go-rarity/services/collection"
+
 	"log"
 	"net/http"
 )
@@ -89,9 +91,13 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPublishedCollections(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.GetPublishedCollections())
+	collections := models.GetPublishedCollections()
+
+	json.NewEncoder(w).Encode(collectionService.MapToS3Urls(collections))
 }
 
 func GetAllCollections(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(models.GetAllCollections())
+	collections := models.GetAllCollections()
+
+	json.NewEncoder(w).Encode(collectionService.MapToS3Urls(collections))
 }

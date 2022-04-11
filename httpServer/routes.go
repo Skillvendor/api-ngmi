@@ -18,5 +18,5 @@ func InitRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/collection/approveReview", middleware.CheckApiKey(collection.ApproveReview))
 	mux.HandleFunc("/api/collection/admin", middleware.CheckApiKey(collection.GetAllCollections))
 
-	mux.HandleFunc("/api/signedUrl", middleware.CheckApiKey(s3.GetSignedUrl))
+	mux.HandleFunc("/api/signedUrl", middleware.CheckApiKey(s3.GetSignedUploadUrl))
 }
