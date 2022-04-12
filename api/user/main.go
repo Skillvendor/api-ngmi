@@ -34,6 +34,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			// user doesn't exist so we try creating
 			rand.Seed(time.Now().UnixNano())
 			newUser.Nonce = rand.Int()
+			newUser.AccessLevel = 1
+			newUser.AuthToken = ""
 			newUser.Save()
 		}
 

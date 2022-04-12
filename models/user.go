@@ -33,7 +33,10 @@ func (user *User) Find() {
 }
 
 func (user *User) Update() {
-	_, err := dbConn.DB.Model(user).WherePK().Update()
+	_, err := dbConn.DB.Model(user).
+		Column("Nonce", "AuthToken").
+		WherePK().
+		Update()
 	if err != nil {
 		log.Println("Can't Update", err)
 	}

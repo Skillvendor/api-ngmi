@@ -24,7 +24,9 @@ func Run() {
 			"https://magic-carpet-dev.netlify.app",
 			"https://magic-carpet.netlify.app",
 			"http://local.magic-carpet-admin.com:3001",
-			"https://local.magic-carpet-admin.com:3001"},
+			"https://local.magic-carpet-admin.com:3001",
+			"https://ngmilab.com",
+		},
 		AllowCredentials: true,
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		// Enable Debugging for testing, consider disabling in production
