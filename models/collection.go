@@ -52,8 +52,15 @@ func (collection *Collection) Save() {
 	}
 }
 
+func (collection *Collection) Update() {
+	_, err := dbConn.DB.Model(collection).WherePK().Update()
+	if err != nil {
+		log.Println("Can't Update", err)
+	}
+}
+
 func (collection *Collection) Find() {
-	err := dbConn.DB.Model(collection).Where("Id = ?", collection.Id).First()
+	err := dbConn.DB.Model(collection).WherePK().First()
 	if err != nil {
 		log.Println("Can't insert", err)
 	}

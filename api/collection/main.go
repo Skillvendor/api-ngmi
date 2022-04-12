@@ -33,6 +33,29 @@ func CreateCollection(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func UpdateCollection(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "PATCH", "PUT":
+		myCollection := models.Collection{}
+
+		err := json.NewDecoder(r.Body).Decode(&myCollection)
+
+		if err != nil {
+			log.Println("Error encoding collection", err)
+		}
+
+		myCollection.Update()
+
+		err = json.NewEncoder(w).Encode(myCollection)
+
+		if err != nil {
+			log.Println("ERROR Encoding", err)
+		}
+	default:
+		w.Write([]byte("Come on man... it's a PATCH or PUT"))
+	}
+}
+
 func GetCollection(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":

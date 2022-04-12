@@ -14,6 +14,7 @@ func InitRoutes(mux *http.ServeMux) {
 
 	// private
 	mux.HandleFunc("/api/collection/create", middleware.CheckApiKey(collection.CreateCollection))
+	mux.HandleFunc("/api/collection/update", middleware.CheckApiKey(collection.UpdateCollection))
 	mux.HandleFunc("/api/collection/delete", middleware.CheckApiKey(collection.DeleteCollection))
 	mux.HandleFunc("/api/collection/approveReview", middleware.CheckApiKey(collection.ApproveReview))
 	mux.HandleFunc("/api/collection/admin", middleware.CheckApiKey(collection.GetAllCollections))
