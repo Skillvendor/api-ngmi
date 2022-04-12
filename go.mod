@@ -2,6 +2,8 @@ module go-rarity
 
 go 1.17
 
+require github.com/ethereum/go-ethereum v1.10.17
+
 require (
 	github.com/apex/gateway v1.1.2 // indirect
 	github.com/apex/gateway/v2 v2.0.0 // indirect
@@ -9,8 +11,12 @@ require (
 	github.com/aws/aws-sdk-go v1.43.26 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.1 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
+	github.com/btcsuite/btcd/btcec/v2 v2.1.2 // indirect
+	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.0.1 // indirect
 	github.com/go-pg/pg/v10 v10.10.6 // indirect
 	github.com/go-pg/zerochecker v0.2.0 // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/jinzhu/copier v0.3.5 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect

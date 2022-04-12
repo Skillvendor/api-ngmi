@@ -43,8 +43,6 @@ type Collection struct {
 	Published   bool        `pg:"published"`
 }
 
-var TableName = "collections"
-
 func (collection *Collection) Save() {
 	_, err := dbConn.DB.Model(collection).Insert()
 	if err != nil {
