@@ -80,6 +80,10 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 		user.Find()
 
 		msg := "I am signing my one-time nonce: " + strconv.Itoa(user.Nonce)
+		if msg != "I am signing my one-time nonce: 900669524190634100" {
+			w.Write([]byte("different"))
+			log.Println("this is msg ", msg)
+		}
 
 		signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
 
