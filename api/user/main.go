@@ -23,7 +23,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 			log.Println("Error encoding collection", err)
 		}
 
-		if newUser.Address != "" {
+		if newUser.Address == "" {
 			w.Write([]byte("Come on man... give me an address"))
 			return
 		}
