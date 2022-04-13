@@ -114,7 +114,7 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPublishedCollections(w http.ResponseWriter, r *http.Request) {
-	collections := models.GetPublishedCollections()
+	collections := collectionService.GetPublishedCollections()
 
 	json.NewEncoder(w).Encode(collectionService.MapToS3Urls(collections))
 }
