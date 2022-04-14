@@ -57,6 +57,8 @@ func verifySig(from, sigHex string, msg []byte) bool {
 
 	recoveredAddr := crypto.PubkeyToAddress(*recovered)
 
+	log.Println("this is verify sig ", msg, sigHex, recoveredAddr, from)
+
 	return from == recoveredAddr.Hex()
 }
 
