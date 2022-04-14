@@ -8,6 +8,7 @@ import (
 	"log"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 
 	"net/http"
@@ -83,7 +84,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 
 		msg := "I am signing my one-time nonce: " + user.Nonce
 
-		signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
+		signed := verifySig(strings.ToLower(user.Address), newSignature.Signature, []byte(msg))
 
 		if !signed {
 			log.Println("this is msg ", msg)
