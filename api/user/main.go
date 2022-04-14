@@ -20,6 +20,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 		err := json.NewDecoder(r.Body).Decode(&newUser)
 
+		log.Println("The Body", r.Body)
+		log.Println(newUser.Address)
 		if err != nil {
 			log.Println("Error encoding collection", err)
 		}
