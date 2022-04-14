@@ -3,7 +3,7 @@ CREATE TABLE users (
   created_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   address text NOT NULL UNIQUE,
-  nonce bigint NOT NULL,
+  nonce text NOT NULL,
   auth_token text,
   access_level int DEFAULT 1
 );

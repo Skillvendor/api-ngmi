@@ -79,15 +79,12 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 		user := models.User{Address: newSignature.Address}
 		user.Find()
 
-		msg := "I am signing my one-time nonce: " + strconv.Itoa(user.Nonce)
-		if msg != "I am signing my one-time nonce: 900669524190634100" {
-			w.Write([]byte("different"))
-			log.Println("this is msg ", msg)
-		}
+		msg := "I am signing my one-time nonce: " + user.Nonce
 
 		signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
 
 		if !signed {
+			log.Println("this is msg ", msg)
 			w.Write([]byte("Are you trying to hack?"))
 			return
 		}
@@ -102,7 +99,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 
 		user.AuthToken = authToken
 		rand.Seed(time.Now().UnixNano())
-		user.Nonce = rand.Int()
+		user.Nonce = strconv.Itoa(rand.Int())
 		user.Update()
 
 		err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})

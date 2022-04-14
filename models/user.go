@@ -8,14 +8,14 @@ import (
 type User struct {
 	Id          int    `pg:"id"`
 	Address     string `pg:"address"`
-	Nonce       int    `pg:"nonce"`
+	Nonce       string `pg:"nonce"`
 	AuthToken   string `pg:"auth_token"`
 	AccessLevel int    `pg:"access_level"`
 }
 
 type PublicUser struct {
 	Address string `pg:"address"`
-	Nonce   int    `pg:"nonce"`
+	Nonce   string `pg:"nonce"`
 }
 
 func (user *User) Save() {

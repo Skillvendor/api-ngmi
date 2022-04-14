@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"go-rarity/models"
 	"math/rand"
+	"strconv"
 	"time"
 
 	"log"
@@ -33,7 +34,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		if newUser.Id == 0 {
 			// user doesn't exist so we try creating
 			rand.Seed(time.Now().UnixNano())
-			newUser.Nonce = rand.Int()
+			newUser.Nonce = strconv.Itoa(rand.Int())
 			newUser.AccessLevel = 1
 			newUser.AuthToken = ""
 			newUser.Save()
