@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"go-rarity/models"
 	"go-rarity/services/auth"
+	"go-rarity/types"
 	"log"
 	"math/rand"
 	"strconv"
@@ -18,23 +19,6 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/golang-jwt/jwt"
 )
-
-func CreateJWT(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		address := "dawfdeaiudjwiu32132131321321"
-		newPayload := auth.JWTPayload{
-			Address:        address,
-			ExpirationTime: auth.AuthTokenExpirationTime,
-		}
-
-		authToken := auth.CreateJWT(newPayload)
-
-		w.Write([]byte(authToken))
-	default:
-		w.Write([]byte("Come on man... it's a post"))
-	}
-}
 
 type SignatureData struct {
 	Address   string
@@ -85,8 +69,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 		signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
 
 		if !signed {
-			w.Write([]byte("Are you trying to hack?"))
-			return
+			json.NewEncoder(w).Encode(types.StandardError{Message: "No Hackers Allowed"})
+			w.WriteHeader(http.StatusUnauthorized)
 		}
 
 		address := user.Address
@@ -105,7 +89,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 		err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})
 
 		if err != nil {
-			log.Println("ERROR Encoding Token", err)
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
@@ -117,7 +102,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 			Expires: auth.AuthTokenExpirationTime,
 		})
 	default:
-		w.Write([]byte("Come on man... it's a post"))
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Expected a POST request"})
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }
 

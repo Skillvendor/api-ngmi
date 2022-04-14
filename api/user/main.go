@@ -3,11 +3,11 @@ package user
 import (
 	"encoding/json"
 	"go-rarity/models"
+	"go-rarity/types"
 	"math/rand"
 	"strconv"
 	"time"
 
-	"log"
 	"net/http"
 
 	"github.com/jinzhu/copier"
@@ -21,11 +21,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		err := json.NewDecoder(r.Body).Decode(&newUser)
 
 		if err != nil {
-			log.Println("Error encoding collection", err)
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding User"})
+			w.WriteHeader(http.StatusInternalServerError)
 		}
 
 		if newUser.Address == "" {
-			w.Write([]byte("Come on man... give me an address"))
+			json.NewEncoder(w).Encode(types.StandardError{Message: "No Address Given"})
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
@@ -43,10 +45,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		err = json.NewEncoder(w).Encode(newUser)
 
 		if err != nil {
-			log.Println("ERROR Encoding", err)
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 	default:
-		w.Write([]byte("Come on man... it's a post"))
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Post method"})
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }
 
@@ -58,12 +63,14 @@ func GetPublicUser(w http.ResponseWriter, r *http.Request) {
 		err := json.NewDecoder(r.Body).Decode(&newUser)
 
 		if err != nil {
-			log.Println("Error encoding collection", err)
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding User"})
+			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
 		if newUser.Address == "" {
-			w.Write([]byte("Come on man... give me an address"))
+			json.NewEncoder(w).Encode(types.StandardError{Message: "No Address provided"})
+			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
@@ -71,7 +78,7 @@ func GetPublicUser(w http.ResponseWriter, r *http.Request) {
 
 		if newUser.Id == 0 {
 			// user doesn't exist so we try creating
-			w.Write([]byte("Can't find user"))
+			json.NewEncoder(w).Encode(types.StandardError{Message: "No User Found"})
 			return
 		}
 
@@ -81,9 +88,12 @@ func GetPublicUser(w http.ResponseWriter, r *http.Request) {
 		err = json.NewEncoder(w).Encode(publicUser)
 
 		if err != nil {
-			log.Println("ERROR Encoding", err)
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 	default:
-		w.Write([]byte("Please use a post"))
+		json.NewEncoder(w).Encode(types.StandardError{Message: "It should be a POST"})
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }

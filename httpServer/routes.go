@@ -22,17 +22,17 @@ func InitRoutes(mux *http.ServeMux) {
 
 	// auth
 	mux.HandleFunc("/api/auth/authentication", auth.Authentication)
-	mux.HandleFunc("/api/auth/test", middleware.CheckJWTToken(auth.TestJWT))
+	mux.HandleFunc("/api/auth/test", middleware.CheckJWTToken(auth.TestJWT, 1))
 
 	// private
 
 	// collection
-	mux.HandleFunc("/api/collection/create", middleware.CheckApiKey(collection.CreateCollection))
-	mux.HandleFunc("/api/collection/update", middleware.CheckApiKey(collection.UpdateCollection))
-	mux.HandleFunc("/api/collection/delete", middleware.CheckApiKey(collection.DeleteCollection))
-	mux.HandleFunc("/api/collection/approveReview", middleware.CheckApiKey(collection.ApproveReview))
-	mux.HandleFunc("/api/collection/admin", middleware.CheckApiKey(collection.GetAllCollections))
+	mux.HandleFunc("/api/collection/create", middleware.CheckJWTToken(collection.CreateCollection, 5))
+	mux.HandleFunc("/api/collection/update", middleware.CheckJWTToken(collection.UpdateCollection, 5))
+	mux.HandleFunc("/api/collection/delete", middleware.CheckJWTToken(collection.DeleteCollection, 6))
+	mux.HandleFunc("/api/collection/approveReview", middleware.CheckJWTToken(collection.ApproveReview, 6))
+	mux.HandleFunc("/api/collection/admin", middleware.CheckJWTToken(collection.GetAllCollections, 5))
 
 	// s3
-	mux.HandleFunc("/api/signedUrl", middleware.CheckApiKey(s3.GetSignedUploadUrl))
+	mux.HandleFunc("/api/signedUrl", middleware.CheckJWTToken(s3.GetSignedUploadUrl, 5))
 }

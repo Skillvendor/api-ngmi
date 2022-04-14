@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"context"
+	"encoding/json"
 	"go-rarity/models"
 	"go-rarity/services/auth"
+	"go-rarity/types"
 	"net/http"
 	"os"
 
@@ -23,7 +25,7 @@ func CheckApiKey(handler func(w http.ResponseWriter, r *http.Request)) func(w ht
 	}
 }
 
-func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
+func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request), accessLevel int) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 
@@ -34,6 +36,7 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request)) func(w 
 				w.WriteHeader(http.StatusUnauthorized)
 				return
 			}
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Did you provide a token?"})
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
@@ -46,7 +49,13 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request)) func(w 
 		user.Find()
 
 		if user.AuthToken != authHeader {
-			w.Write([]byte("Why do you steal tokens ?"))
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Why do you steal tokens ?"})
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+
+		if user.AccessLevel < accessLevel {
+			json.NewEncoder(w).Encode(types.StandardError{Message: "Not access to this resource"})
 			w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
