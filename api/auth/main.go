@@ -58,9 +58,7 @@ func verifySig(from, sigHex string, msg []byte) bool {
 
 	recoveredAddr := crypto.PubkeyToAddress(*recovered)
 
-	log.Println("this is verify sig ", msg, sigHex, recoveredAddr, from)
-
-	return from == recoveredAddr.Hex()
+	return strings.ToLower(from) == strings.ToLower(recoveredAddr.Hex())
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) {
@@ -84,10 +82,9 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 
 		msg := "I am signing my one-time nonce: " + user.Nonce
 
-		signed := verifySig(strings.ToLower(user.Address), newSignature.Signature, []byte(msg))
+		signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
 
 		if !signed {
-			log.Println("this is msg ", msg)
 			w.Write([]byte("Are you trying to hack?"))
 			return
 		}
