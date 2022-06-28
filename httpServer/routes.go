@@ -27,7 +27,7 @@ func InitRoutes(mux *http.ServeMux) {
 	// private
 
 	// report
-	mux.HandleFunc("/api/report/create", report.CreateReport)
+	mux.HandleFunc("/api/report/create", middleware.CheckJWTToken(report.CreateReport, 5))
 	mux.HandleFunc("/api/report/update", middleware.CheckJWTToken(report.UpdateReport, 5))
 	mux.HandleFunc("/api/report/delete", middleware.CheckJWTToken(report.DeleteReport, 6))
 	mux.HandleFunc("/api/report/approveReview", middleware.CheckJWTToken(report.ApproveReview, 6))
