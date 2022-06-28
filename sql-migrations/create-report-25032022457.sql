@@ -5,7 +5,7 @@ CREATE TABLE reports (
   name text,
   description text,
   logo text,
-  chain int,
+  chain text,
   rating decimal,
   rating_breakdown jsonb,
   tags text[],

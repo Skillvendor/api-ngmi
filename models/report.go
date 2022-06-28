@@ -33,19 +33,19 @@ type MintDetails struct {
 }
 
 type Report struct {
-	Id                   int                    `pg:"id"`
-	CreatedAt            string                 `pg:"created_at"`
-	UpdatedAt            string                 `pg:"updated_at"`
-	Name                 string                 `pg:"name"`
-	Description          string                 `pg:"description"`
-	Logo                 string                 `pg:"logo"`
-	Chain                Chain                  `pg:"chain"`
-	Socials              map[string]interface{} `pg:"socials"`
-	ReportDetails        map[string]interface{} `pg:"report_details"`
-	DetailedAnalysis     map[string]interface{} `pg:"detailed_analysis"`
-	ReportDetailsLink    string                 `pg:"report_details_link"`
-	DetailedAnalysisLink string                 `pg:"detailed_analysis_link"`
-	Published            bool                   `pg:"published"`
+	Id                   int                    `pg:"id" visibility:"free bronze silver gold" json:"id,omitempty"`
+	CreatedAt            string                 `pg:"created_at" visibility:"free bronze silver gold" json:"created_at,omitempty"`
+	UpdatedAt            string                 `pg:"updated_at" visibility:"free bronze silver gold" json:"updated_at,omitempty"`
+	Name                 string                 `pg:"name" visibility:"free bronze silver gold" json:"name,omitempty"`
+	Description          string                 `pg:"description" visibility:"free bronze silver gold" json:"description,omitempty"`
+	Logo                 string                 `pg:"logo" visibility:"free bronze silver gold" json:"logo,omitempty"`
+	Chain                string                 `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
+	Socials              map[string]interface{} `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
+	ReportDetails        map[string]interface{} `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
+	DetailedAnalysis     map[string]interface{} `pg:"detailed_analysis" visibility:"gold" json:"detailed_analysis,omitempty"`
+	ReportDetailsLink    string                 `pg:"report_details_link" visibility:"silver gold" json:"report_details_link,omitempty"`
+	DetailedAnalysisLink string                 `pg:"detailed_analysis_link" visibility:"gold" json:"detailed_analysis_link,omitempty"`
+	Published            bool                   `pg:"published" visibility:"free bronze silver gold" json:"published,omitempty"`
 }
 
 func (report *Report) Save() {

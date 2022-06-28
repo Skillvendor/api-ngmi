@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"context"
-	"encoding/json"
 	"api-ngmi/models"
 	"api-ngmi/services/auth"
 	"api-ngmi/types"
+	"context"
+	"encoding/json"
 	"log"
 	"math/rand"
 	"strconv"

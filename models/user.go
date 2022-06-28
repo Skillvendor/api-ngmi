@@ -6,11 +6,11 @@ import (
 )
 
 type User struct {
-	Id          int    `pg:"id"`
+	Id          int    `pg:"id" json:"-"`
 	Address     string `pg:"address"`
 	Nonce       string `pg:"nonce"`
-	AuthToken   string `pg:"auth_token"`
-	AccessLevel int    `pg:"access_level"`
+	AuthToken   string `pg:"auth_token" json:"-"`
+	AccessLevel int    `pg:"access_level" json:"-"`
 }
 
 type PublicUser struct {

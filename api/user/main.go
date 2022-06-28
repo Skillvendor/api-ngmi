@@ -1,16 +1,14 @@
 package user
 
 import (
-	"encoding/json"
 	"api-ngmi/models"
 	"api-ngmi/types"
+	"encoding/json"
 	"math/rand"
 	"strconv"
 	"time"
 
 	"net/http"
-
-	"github.com/jinzhu/copier"
 )
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
@@ -77,15 +75,11 @@ func GetPublicUser(w http.ResponseWriter, r *http.Request) {
 		newUser.Find()
 
 		if newUser.Id == 0 {
-			// user doesn't exist so we try creating
 			json.NewEncoder(w).Encode(types.StandardError{Message: "No User Found"})
 			return
 		}
 
-		publicUser := models.PublicUser{}
-		copier.Copy(&publicUser, &newUser)
-
-		err = json.NewEncoder(w).Encode(publicUser)
+		err = json.NewEncoder(w).Encode(newUser)
 
 		if err != nil {
 			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
