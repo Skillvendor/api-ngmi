@@ -1,10 +1,10 @@
 package report
 
 import (
-	"encoding/json"
 	"api-ngmi/models"
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
+	"encoding/json"
 
 	"net/http"
 )
@@ -140,6 +140,7 @@ func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(reportService.MapToS3Urls(reports))
 }
 
+// only for admin
 func GetAllReports(w http.ResponseWriter, r *http.Request) {
 	reports := models.GetAllReports()
 

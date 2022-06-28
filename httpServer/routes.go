@@ -31,7 +31,7 @@ func InitRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/api/report/update", middleware.CheckJWTToken(report.UpdateReport, 5))
 	mux.HandleFunc("/api/report/delete", middleware.CheckJWTToken(report.DeleteReport, 6))
 	mux.HandleFunc("/api/report/approveReview", middleware.CheckJWTToken(report.ApproveReview, 6))
-	mux.HandleFunc("/api/report/admin", middleware.CheckJWTToken(report.GetAllReports, 5))
+	mux.HandleFunc("/api/report/admin/all", middleware.CheckJWTToken(report.GetAllReports, 5))
 
 	// s3
 	mux.HandleFunc("/api/signedUrl", middleware.CheckJWTToken(s3.GetSignedUploadUrl, 5))

@@ -47,7 +47,6 @@ func MapToS3Urls(cs []models.Report) []models.Report {
 }
 
 func GetPublishedReports() []models.Report {
-	// var network bytes.Buffer
 	var reports []models.Report
 
 	got, err := cache.LocalCache.Get(ReportCacheKey)

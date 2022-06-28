@@ -12,7 +12,7 @@ CREATE TABLE reports (
   socials jsonb,
   report_details jsonb,
   detailed_analysis jsonb,
-  report_details_link string,
-  detailed_analysis_link string,
+  report_details_link text,
+  detailed_analysis_link text,
   published boolean DEFAULT FALSE
 );
