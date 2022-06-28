@@ -7,15 +7,10 @@ import (
 
 type User struct {
 	Id          int    `pg:"id" json:"-"`
-	Address     string `pg:"address"`
-	Nonce       string `pg:"nonce"`
+	Address     string `pg:"address" json:"address,omitempty"`
+	Nonce       string `pg:"nonce" json:"nonce,omitempty"`
 	AuthToken   string `pg:"auth_token" json:"-"`
 	AccessLevel int    `pg:"access_level" json:"-"`
-}
-
-type PublicUser struct {
-	Address string `pg:"address"`
-	Nonce   string `pg:"nonce"`
 }
 
 func (user *User) Save() {
