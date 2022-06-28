@@ -1,20 +1,20 @@
 package httpServer
 
 import (
-	"go-rarity/api/auth"
-	"go-rarity/api/collection"
-	"go-rarity/api/s3"
-	"go-rarity/api/user"
-	"go-rarity/middleware"
+	"api-ngmi/api/auth"
+	"api-ngmi/api/report"
+	"api-ngmi/api/s3"
+	"api-ngmi/api/user"
+	"api-ngmi/middleware"
 	"net/http"
 )
 
 func InitRoutes(mux *http.ServeMux) {
 	// public
 
-	// collection
-	mux.HandleFunc("/api/collection/all", collection.GetPublishedCollections)
-	mux.HandleFunc("/api/collection/show", collection.GetCollection)
+	// report
+	mux.HandleFunc("/api/report/all", report.GetPublishedReports)
+	mux.HandleFunc("/api/report/show", report.GetReport)
 
 	// user
 	mux.HandleFunc("/api/user/create", user.CreateUser)
@@ -26,12 +26,12 @@ func InitRoutes(mux *http.ServeMux) {
 
 	// private
 
-	// collection
-	mux.HandleFunc("/api/collection/create", middleware.CheckJWTToken(collection.CreateCollection, 5))
-	mux.HandleFunc("/api/collection/update", middleware.CheckJWTToken(collection.UpdateCollection, 5))
-	mux.HandleFunc("/api/collection/delete", middleware.CheckJWTToken(collection.DeleteCollection, 6))
-	mux.HandleFunc("/api/collection/approveReview", middleware.CheckJWTToken(collection.ApproveReview, 6))
-	mux.HandleFunc("/api/collection/admin", middleware.CheckJWTToken(collection.GetAllCollections, 5))
+	// report
+	mux.HandleFunc("/api/report/create", middleware.CheckJWTToken(report.CreateReport, 5))
+	mux.HandleFunc("/api/report/update", middleware.CheckJWTToken(report.UpdateReport, 5))
+	mux.HandleFunc("/api/report/delete", middleware.CheckJWTToken(report.DeleteReport, 6))
+	mux.HandleFunc("/api/report/approveReview", middleware.CheckJWTToken(report.ApproveReview, 6))
+	mux.HandleFunc("/api/report/admin", middleware.CheckJWTToken(report.GetAllReports, 5))
 
 	// s3
 	mux.HandleFunc("/api/signedUrl", middleware.CheckJWTToken(s3.GetSignedUploadUrl, 5))

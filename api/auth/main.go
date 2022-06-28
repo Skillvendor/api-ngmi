@@ -3,9 +3,9 @@ package auth
 import (
 	"context"
 	"encoding/json"
-	"go-rarity/models"
-	"go-rarity/services/auth"
-	"go-rarity/types"
+	"api-ngmi/models"
+	"api-ngmi/services/auth"
+	"api-ngmi/types"
 	"log"
 	"math/rand"
 	"strconv"

@@ -1,7 +1,7 @@
 package models
 
 import (
-	"go-rarity/dbConn"
+	"api-ngmi/dbConn"
 	"log"
 )
 

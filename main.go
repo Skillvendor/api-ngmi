@@ -1,7 +1,7 @@
 package main
 
 import (
-	"go-rarity/httpServer"
+	"api-ngmi/httpServer"
 )
 
 func main() {

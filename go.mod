@@ -1,4 +1,4 @@
-module go-rarity
+module api-ngmi
 
 go 1.17
 

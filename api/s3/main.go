@@ -2,8 +2,8 @@ package s3
 
 import (
 	"encoding/json"
-	"go-rarity/services/s3"
-	"go-rarity/types"
+	"api-ngmi/services/s3"
+	"api-ngmi/types"
 	"net/http"
 )
 

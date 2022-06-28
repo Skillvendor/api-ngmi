@@ -2,8 +2,8 @@ package user
 
 import (
 	"encoding/json"
-	"go-rarity/models"
-	"go-rarity/types"
+	"api-ngmi/models"
+	"api-ngmi/types"
 	"math/rand"
 	"strconv"
 	"time"

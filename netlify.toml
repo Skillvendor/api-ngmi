@@ -6,10 +6,10 @@
   directory = "functions"
 
 [build.environment]
-  GO_IMPORT_PATH = "github.com/Skillvendor/go-rarity"
+  GO_IMPORT_PATH = "github.com/Skillvendor/api-ngmi"
   GO111MODULE = "on"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/go-rarity/:splat"
+  to = "/.netlify/functions/api-ngmi/:splat"
   status = 200

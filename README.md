@@ -1,1 +1,1 @@
-# go-rarity
+# api-ngmi
