@@ -181,7 +181,7 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
 	reports := reportService.GetPublishedReports()
 
-	json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "all", filterReport))
+	json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "free", filterReport))
 }
 
 // only for admin
