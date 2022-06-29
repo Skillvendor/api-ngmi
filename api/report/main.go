@@ -174,6 +174,7 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println("Do I find it?", newReport.Find())
 	fmt.Println("IS IT PUBLISHED?", newReport.Publish())
 
 	json.NewEncoder(w).Encode(newReport)
