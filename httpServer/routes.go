@@ -19,7 +19,7 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports", http.HandlerFunc(report.GetPublishedReports))
 
 	// user
-	mux.Get("/api/user/:id", http.HandlerFunc(user.GetPublicUser))
+	mux.Get("/api/user/:address", http.HandlerFunc(user.GetPublicUser))
 	mux.Post("/api/user", http.HandlerFunc(user.CreateUser))
 
 	// auth
@@ -32,7 +32,7 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Patch("/api/reports/:id", http.HandlerFunc(middleware.CheckJWTToken(report.UpdateReport, 5)))
 	mux.Del("/api/reports/:id", http.HandlerFunc(middleware.CheckJWTToken(report.DeleteReport, 6)))
 	mux.Post("/api/reports", http.HandlerFunc(middleware.CheckJWTToken(report.CreateReport, 5)))
-	mux.Patch("/api/reports/approveReview/:id", http.HandlerFunc(middleware.CheckJWTToken(report.ApproveReview, 6)))
+	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(middleware.CheckJWTToken(report.ApproveReview, 6)))
 	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.CheckJWTToken(report.GetAllReports, 5)))
 
 	// s3

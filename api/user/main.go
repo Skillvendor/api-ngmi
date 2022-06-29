@@ -54,40 +54,30 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPublicUser(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		newUser := models.User{}
+	newUser := models.User{}
 
-		err := json.NewDecoder(r.Body).Decode(&newUser)
+	address := r.URL.Query().Get(":address")
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding User"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+	newUser.Address = address
 
-		if newUser.Address == "" {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "No Address provided"})
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		newUser.Find()
-
-		if newUser.Id == 0 {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "No User Found"})
-			return
-		}
-
-		err = json.NewEncoder(w).Encode(newUser)
-
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "It should be a POST"})
+	if newUser.Address == "" {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "No Address provided"})
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	newUser.Find()
+
+	if newUser.Id == 0 {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "No User Found"})
+		return
+	}
+
+	err := json.NewEncoder(w).Encode(newUser)
+
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }

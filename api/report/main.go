@@ -5,7 +5,6 @@ import (
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -24,8 +23,6 @@ func filterReport(r models.Report, role string) models.Report {
 		v := ev.Field(i)
 		t := et.Field(i)
 		roles := t.Tag.Get("visibility")
-
-		fmt.Println("These are the roles", roles, role, strings.Contains(roles, role))
 
 		if strings.Contains(roles, role) {
 			switch i {
@@ -96,7 +93,16 @@ func CreateReport(w http.ResponseWriter, r *http.Request) {
 func UpdateReport(w http.ResponseWriter, r *http.Request) {
 	newReport := models.Report{}
 
-	err := json.NewDecoder(r.Body).Decode(&newReport)
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting id"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&newReport)
+	newReport.Id = id
 
 	if err != nil {
 		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
@@ -119,8 +125,6 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
-
-	fmt.Println("this is the id", id)
 	newReport.Id = id
 
 	if err != nil {
@@ -130,8 +134,6 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newReport.Find()
-
-	fmt.Println("got the report", newReport)
 
 	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
 
@@ -145,7 +147,8 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 func DeleteReport(w http.ResponseWriter, r *http.Request) {
 	newReport := models.Report{}
 
-	err := json.NewDecoder(r.Body).Decode(&newReport)
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	newReport.Id = id
 
 	if err != nil {
 		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
@@ -153,13 +156,16 @@ func DeleteReport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(models.DeleteReportById(int(newReport.Id)))
+	newReport.Delete()
+
+	json.NewEncoder(w).Encode([]byte("Ok!"))
 }
 
 func ApproveReview(w http.ResponseWriter, r *http.Request) {
 	newReport := models.Report{}
 
-	err := json.NewDecoder(r.Body).Decode(&newReport)
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	newReport.Id = id
 
 	if err != nil {
 		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
@@ -167,7 +173,9 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(models.ApproveReview(int(newReport.Id)))
+	newReport.Publish()
+
+	json.NewEncoder(w).Encode(newReport)
 }
 
 func GetPublishedReports(w http.ResponseWriter, r *http.Request) {

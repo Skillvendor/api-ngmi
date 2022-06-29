@@ -48,25 +48,55 @@ type Report struct {
 	Published            bool                   `pg:"published" visibility:"free bronze silver gold" json:"published,omitempty"`
 }
 
-func (report *Report) Save() {
+func (report *Report) Save() bool {
 	_, err := dbConn.DB.Model(report).Insert()
 	if err != nil {
 		log.Println("Can't insert", err)
+		return false
 	}
+
+	return true
 }
 
-func (report *Report) Update() {
+func (report *Report) Update() bool {
 	_, err := dbConn.DB.Model(report).WherePK().Update()
 	if err != nil {
 		log.Println("Can't Update", err)
+		return false
 	}
+
+	return true
 }
 
-func (report *Report) Find() {
+func (report *Report) Delete() bool {
+	_, err := dbConn.DB.Model(report).WherePK().Delete()
+	if err != nil {
+		log.Println("Can't Delete", err)
+		return false
+	}
+
+	return true
+}
+
+func (report *Report) Find() bool {
 	err := dbConn.DB.Model(report).WherePK().First()
 	if err != nil {
 		log.Println("Can't insert", err)
+		return false
 	}
+
+	return true
+}
+
+func (report *Report) Publish() bool {
+	_, err := dbConn.DB.Model(&Report{}).Set("published = true").WherePK().Update()
+
+	if err != nil {
+		log.Println("Can't publish Report", err)
+		return false
+	}
+
+	return true
 }
 
 func GetAllReports() []Report {
