@@ -7,32 +7,36 @@ import (
 	"api-ngmi/api/user"
 	"api-ngmi/middleware"
 	"net/http"
+
+	"github.com/bmizerany/pat"
 )
 
-func InitRoutes(mux *http.ServeMux) {
+func InitRoutes(mux *pat.PatternServeMux) {
 	// public
 
 	// report
-	mux.HandleFunc("/api/report/all", report.GetPublishedReports)
-	mux.HandleFunc("/api/report/show", report.GetReport)
+	mux.Get("/api/reports/:id", http.HandlerFunc(report.GetReport))
+	mux.Get("/api/reports", http.HandlerFunc(report.GetPublishedReports))
 
 	// user
-	mux.HandleFunc("/api/user/create", user.CreateUser)
-	mux.HandleFunc("/api/user/show", user.GetPublicUser)
+	mux.Get("/api/user/:id", http.HandlerFunc(user.GetPublicUser))
+	mux.Post("/api/user", http.HandlerFunc(user.CreateUser))
 
 	// auth
-	mux.HandleFunc("/api/auth/authentication", auth.Authentication)
-	mux.HandleFunc("/api/auth/test", middleware.CheckJWTToken(auth.TestJWT, 1))
+	mux.Post("/api/auth/authentication", http.HandlerFunc(auth.Authentication))
+	mux.Get("/api/auth/test", http.HandlerFunc(middleware.CheckJWTToken(auth.TestJWT, 1)))
 
 	// private
 
 	// report
-	mux.HandleFunc("/api/report/create", middleware.CheckJWTToken(report.CreateReport, 5))
-	mux.HandleFunc("/api/report/update", middleware.CheckJWTToken(report.UpdateReport, 5))
-	mux.HandleFunc("/api/report/delete", middleware.CheckJWTToken(report.DeleteReport, 6))
-	mux.HandleFunc("/api/report/approveReview", middleware.CheckJWTToken(report.ApproveReview, 6))
-	mux.HandleFunc("/api/report/admin/all", middleware.CheckJWTToken(report.GetAllReports, 5))
+	mux.Patch("/api/reports/:id", http.HandlerFunc(middleware.CheckJWTToken(report.UpdateReport, 5)))
+	mux.Del("/api/reports/:id", http.HandlerFunc(middleware.CheckJWTToken(report.DeleteReport, 6)))
+	mux.Post("/api/reports", http.HandlerFunc(middleware.CheckJWTToken(report.CreateReport, 5)))
+	mux.Patch("/api/reports/approveReview/:id", http.HandlerFunc(middleware.CheckJWTToken(report.ApproveReview, 6)))
+	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.CheckJWTToken(report.GetAllReports, 5)))
 
 	// s3
-	mux.HandleFunc("/api/signedUrl", middleware.CheckJWTToken(s3.GetSignedUploadUrl, 5))
+	mux.Get("/api/signedUrl", http.HandlerFunc(middleware.CheckJWTToken(s3.GetSignedUploadUrl, 5)))
+
+	http.Handle("/", mux)
 }

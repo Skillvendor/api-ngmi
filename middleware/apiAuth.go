@@ -1,11 +1,11 @@
 package middleware
 
 import (
-	"context"
-	"encoding/json"
 	"api-ngmi/models"
 	"api-ngmi/services/auth"
 	"api-ngmi/types"
+	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 

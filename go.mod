@@ -11,6 +11,7 @@ require (
 	github.com/aws/aws-sdk-go v1.43.26 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.1 // indirect
 	github.com/aws/smithy-go v1.11.2 // indirect
+	github.com/bmizerany/pat v0.0.0-20210406213842-e4b6760bdd6f // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/coocood/freecache v1.2.1 // indirect

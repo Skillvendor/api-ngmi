@@ -2,8 +2,9 @@ package httpServer
 
 import (
 	"fmt"
-	"net/http"
 	"os"
+
+	"github.com/bmizerany/pat"
 
 	"github.com/rs/cors"
 )
@@ -12,7 +13,9 @@ func Run() {
 	port := os.Getenv("PORT")
 	env := os.Getenv("ENV")
 
-	mux := http.NewServeMux()
+	// mux := http.NewServeMux()
+
+	mux := pat.New()
 
 	InitRoutes(mux)
 
@@ -35,7 +38,7 @@ func Run() {
 
 	handler := c.Handler(mux)
 
-	fmt.Println("Starting server")
+	fmt.Println("Starting server from iPad")
 	if env == "dev" {
 		fmt.Println("Starting http")
 		StartHttp(port, handler)

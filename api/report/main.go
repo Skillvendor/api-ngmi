@@ -5,6 +5,7 @@ import (
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"net/http"
@@ -67,128 +68,100 @@ func MapFilterReport(vs []models.Report, role string, f func(models.Report, stri
 }
 
 func CreateReport(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		newReport := models.Report{}
+	newReport := models.Report{}
 
-		err := json.NewDecoder(r.Body).Decode(&newReport)
+	err := json.NewDecoder(r.Body).Decode(&newReport)
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Can't decode report"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-		newReport.Published = false
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't decode report"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	newReport.Published = false
 
-		newReport.Save()
+	newReport.Save()
 
-		err = json.NewEncoder(w).Encode(newReport)
+	err = json.NewEncoder(w).Encode(newReport)
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Can't encode report"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Make a post request"})
-		w.WriteHeader(http.StatusBadRequest)
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't encode report"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }
 
 func UpdateReport(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "PATCH", "PUT":
-		newReport := models.Report{}
+	newReport := models.Report{}
 
-		err := json.NewDecoder(r.Body).Decode(&newReport)
+	err := json.NewDecoder(r.Body).Decode(&newReport)
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-		newReport.Update()
+	newReport.Update()
 
-		err = json.NewEncoder(w).Encode(newReport)
+	err = json.NewEncoder(w).Encode(newReport)
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Expected a Patch or Put"})
-		w.WriteHeader(http.StatusBadRequest)
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }
 
 func GetReport(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		newReport := models.Report{}
+	newReport := models.Report{}
 
-		err := json.NewDecoder(r.Body).Decode(&newReport)
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding Token"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
+	newReport.Id = id
 
-		newReport.Find()
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-		err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "all"))
+	newReport.Find()
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Expected a post"})
-		w.WriteHeader(http.StatusBadRequest)
+	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "all"))
+
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }
 
 func DeleteReport(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		newReport := models.Report{}
+	newReport := models.Report{}
 
-		err := json.NewDecoder(r.Body).Decode(&newReport)
+	err := json.NewDecoder(r.Body).Decode(&newReport)
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		json.NewEncoder(w).Encode(models.DeleteReportById(int(newReport.Id)))
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Expected a delete call"})
-		w.WriteHeader(http.StatusBadRequest)
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
+
+	json.NewEncoder(w).Encode(models.DeleteReportById(int(newReport.Id)))
 }
 
 func ApproveReview(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		newReport := models.Report{}
+	newReport := models.Report{}
 
-		err := json.NewDecoder(r.Body).Decode(&newReport)
+	err := json.NewDecoder(r.Body).Decode(&newReport)
 
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		json.NewEncoder(w).Encode(models.ApproveReview(int(newReport.Id)))
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Expected a post"})
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
+
+	json.NewEncoder(w).Encode(models.ApproveReview(int(newReport.Id)))
 }
 
 func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
