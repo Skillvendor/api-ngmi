@@ -5,6 +5,7 @@ import (
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -23,6 +24,8 @@ func filterReport(r models.Report, role string) models.Report {
 		v := ev.Field(i)
 		t := et.Field(i)
 		roles := t.Tag.Get("visibility")
+
+		fmt.Println("These are the roles", roles, role, strings.Contains(roles, role))
 
 		if strings.Contains(roles, role) {
 			switch i {
@@ -117,6 +120,7 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 
+	fmt.Println("this is the id", id)
 	newReport.Id = id
 
 	if err != nil {
@@ -127,7 +131,9 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 
 	newReport.Find()
 
-	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "all"))
+	fmt.Println("got the report", newReport)
+
+	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
 
 	if err != nil {
 		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
