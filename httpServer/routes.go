@@ -29,10 +29,10 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	// private
 
 	// report
-	mux.Patch("/api/reports/:id", http.HandlerFunc(middleware.CheckJWTToken(report.UpdateReport, 5)))
-	mux.Del("/api/reports/:id", http.HandlerFunc(middleware.CheckJWTToken(report.DeleteReport, 6)))
-	mux.Post("/api/reports", http.HandlerFunc(middleware.CheckJWTToken(report.CreateReport, 5)))
-	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(middleware.CheckJWTToken(report.ApproveReview, 6)))
+	mux.Patch("/api/reports/:id", http.HandlerFunc(report.UpdateReport))
+	mux.Del("/api/reports/:id", http.HandlerFunc(report.DeleteReport))
+	mux.Post("/api/reports", http.HandlerFunc(report.CreateReport))
+	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(report.ApproveReview))
 	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.CheckJWTToken(report.GetAllReports, 5)))
 
 	// s3
