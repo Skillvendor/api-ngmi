@@ -5,7 +5,6 @@ import (
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -174,8 +173,7 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("Do I find it?", newReport.Find())
-	fmt.Println("IS IT PUBLISHED?", newReport.Publish())
+	newReport.Publish()
 
 	json.NewEncoder(w).Encode(newReport)
 }

@@ -89,7 +89,7 @@ func (report *Report) Find() bool {
 }
 
 func (report *Report) Publish() bool {
-	_, err := dbConn.DB.Model(&Report{}).Set("published = true").WherePK().Update()
+	_, err := dbConn.DB.Model(report).Set("published = true").WherePK().Update()
 
 	if err != nil {
 		log.Println("Can't publish Report", err)
