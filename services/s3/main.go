@@ -24,13 +24,13 @@ func init() {
 		log.Fatal("an s3 bucket was unable to be loaded from env vars asset")
 	}
 
-	assetBucketKey := os.Getenv("AWS_ACCESS_KEY_ID_ASSET")
-	if assetBucketKey == "" {
+	awsAccountId := os.Getenv("AWS_ACCESS_KEY_ID_NGMI")
+	if awsAccountId == "" {
 		log.Fatal("no s3 key asset")
 	}
 
-	assetBucketSecret := os.Getenv("AWS_SECRET_ACCESS_KEY_ASSET")
-	if assetBucketSecret == "" {
+	awsAccountSecret := os.Getenv("AWS_SECRET_ACCESS_KEY_NGMI")
+	if awsAccountSecret == "" {
 		log.Fatal("no s3 secret asset")
 	}
 
@@ -41,24 +41,14 @@ func init() {
 
 	AssetsBucket = &aws.S3Bucket{
 		Name:   assetBucketName,
-		Key:    assetBucketKey,
-		Secret: assetBucketSecret,
+		Key:    awsAccountId,
+		Secret: awsAccountSecret,
 		Region: assetBucketRegion,
 	}
 
 	reportBucketName := os.Getenv("REPORT_BUCKET_NAME")
 	if reportBucketName == "" {
 		log.Fatal("an s3 bucket was unable to be loaded from env vars report")
-	}
-
-	reportBucketKey := os.Getenv("AWS_ACCESS_KEY_ID_REPORT")
-	if reportBucketKey == "" {
-		log.Fatal("no s3 key report")
-	}
-
-	reportBucketSecret := os.Getenv("AWS_SECRET_ACCESS_KEY_REPORT")
-	if reportBucketSecret == "" {
-		log.Fatal("no s3 secret report")
 	}
 
 	reportBucketRegion := os.Getenv("AWS_REGION_REPORT")
@@ -68,8 +58,8 @@ func init() {
 
 	ReportsBucket = &aws.S3Bucket{
 		Name:   reportBucketName,
-		Key:    reportBucketKey,
-		Secret: reportBucketSecret,
+		Key:    awsAccountId,
+		Secret: awsAccountSecret,
 		Region: reportBucketRegion,
 	}
 }
