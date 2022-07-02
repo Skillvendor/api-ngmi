@@ -35,7 +35,7 @@ func Map(vs []string, f func(string) string) []string {
 // }
 
 func TransformToS3Urls(c models.Report) models.Report {
-	c.Logo = s3.GetPublicReadUrl(c.Logo)
+	c.Logo = s3.AssetsBucket.GetPublicReadUrl(c.Logo)
 
 	return c
 }

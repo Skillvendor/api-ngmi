@@ -8,7 +8,7 @@ import (
 )
 
 func GetSignedUploadUrl(w http.ResponseWriter, r *http.Request) {
-	err := json.NewEncoder(w).Encode(s3.GetSignedUploadUrl())
+	err := json.NewEncoder(w).Encode(s3.AssetsBucket.GetSignedUploadUrl())
 
 	if err != nil {
 		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 Upload Url"})
