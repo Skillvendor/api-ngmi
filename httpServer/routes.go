@@ -36,7 +36,9 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.CheckJWTToken(report.GetAllReports, 5)))
 
 	// s3
-	mux.Get("/api/signedUrl", http.HandlerFunc(middleware.CheckJWTToken(s3.GetSignedUploadUrl, 5)))
+	mux.Get("/api/assets/upload", http.HandlerFunc(middleware.CheckJWTToken(s3.GetSignedUploadUrlAssets, 5)))
+	mux.Get("/api/reports/upload", http.HandlerFunc(middleware.CheckJWTToken(s3.GetSignedUploadUrlReports, 5)))
+	mux.Get("/api/reports/read/:key", http.HandlerFunc(middleware.CheckJWTToken(s3.GetSignedDownloadUrlReports, 5)))
 
 	http.Handle("/", mux)
 }
