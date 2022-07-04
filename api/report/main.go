@@ -178,6 +178,23 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newReport)
 }
 
+func RejectReview(w http.ResponseWriter, r *http.Request) {
+	newReport := models.Report{}
+
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	newReport.Id = id
+
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	newReport.Reject()
+
+	json.NewEncoder(w).Encode(newReport)
+}
+
 func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
 	reports := reportService.GetPublishedReports()
 

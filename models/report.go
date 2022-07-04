@@ -99,6 +99,17 @@ func (report *Report) Publish() bool {
 	return true
 }
 
+func (report *Report) Reject() bool {
+	_, err := dbConn.DB.Model(report).Set("published = false").WherePK().Update()
+
+	if err != nil {
+		log.Println("Can't publish Report", err)
+		return false
+	}
+
+	return true
+}
+
 func (report *Report) FindAdmin() bool {
 	err := dbConn.DB.Model(report).WherePK().First()
 	if err != nil {

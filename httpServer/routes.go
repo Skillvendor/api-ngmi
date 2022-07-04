@@ -33,6 +33,7 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Del("/api/reports/:id", http.HandlerFunc(report.DeleteReport))
 	mux.Post("/api/reports", http.HandlerFunc(report.CreateReport))
 	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(report.ApproveReview))
+	mux.Patch("/api/reports/reject/:id", http.HandlerFunc(report.RejectReview))
 	mux.Get("/api/reports/admin/all", http.HandlerFunc(report.GetAllReports))
 	mux.Get("/api/reports/admin/:id", http.HandlerFunc(report.GetReportAdmin))
 
