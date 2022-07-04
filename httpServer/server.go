@@ -22,8 +22,10 @@ func Run() {
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{
 			"http://localhost:3001",
-			"https://rarity-admin-dev.netlify.app",
-			"https://rarity-admin-prod.netlify.app",
+			"http://localhost:3000",
+			"http://127.0.0.1:3000",
+			"https://ngmi-admin-dev.netlify.app",
+			"https://ngmi-admin-prod.netlify.app",
 			"https://magic-carpet-dev.netlify.app",
 			"https://magic-carpet.netlify.app",
 			"http://local.magic-carpet-admin.com:3001",
