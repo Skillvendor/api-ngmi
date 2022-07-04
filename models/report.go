@@ -79,7 +79,7 @@ func (report *Report) Delete() bool {
 }
 
 func (report *Report) Find() bool {
-	err := dbConn.DB.Model(report).WherePK().First()
+	err := dbConn.DB.Model(report).WherePK().Where("published = ?", true).First()
 	if err != nil {
 		log.Println("Can't insert", err)
 		return false
@@ -93,6 +93,16 @@ func (report *Report) Publish() bool {
 
 	if err != nil {
 		log.Println("Can't publish Report", err)
+		return false
+	}
+
+	return true
+}
+
+func (report *Report) FindAdmin() bool {
+	err := dbConn.DB.Model(report).WherePK().First()
+	if err != nil {
+		log.Println("Can't insert", err)
 		return false
 	}
 

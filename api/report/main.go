@@ -190,3 +190,26 @@ func GetAllReports(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(reportService.MapToS3Urls(reports))
 }
+
+func GetReportAdmin(w http.ResponseWriter, r *http.Request) {
+	newReport := models.Report{}
+
+	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
+	newReport.Id = id
+
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	newReport.FindAdmin()
+
+	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
+
+	if err != nil {
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
