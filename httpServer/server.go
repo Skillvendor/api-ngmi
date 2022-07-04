@@ -33,6 +33,7 @@ func Run() {
 			"https://ngmilab.com",
 		},
 		AllowCredentials: true,
+		AllowedMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		// Enable Debugging for testing, consider disabling in production
 		Debug: env != "prod",
