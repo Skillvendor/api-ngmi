@@ -39,7 +39,7 @@ type Report struct {
 	Name                 string                 `pg:"name" visibility:"free bronze silver gold" json:"name,omitempty"`
 	Description          string                 `pg:"description" visibility:"free bronze silver gold" json:"description,omitempty"`
 	Logo                 string                 `pg:"logo" visibility:"free bronze silver gold" json:"logo,omitempty"`
-	LogoUrl              string                 `visibility:"free bronze silver gold" json:"logo_url,omitempty"`
+	LogoUrl              string                 `pg:"-" visibility:"free bronze silver gold" json:"logo_url,omitempty"`
 	Chain                string                 `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
 	Socials              map[string]interface{} `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
 	ReportDetails        map[string]interface{} `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
