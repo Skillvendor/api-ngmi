@@ -13,8 +13,8 @@ import (
 )
 
 type SignedUrlResp struct {
-	Url string
-	Key string
+	Url string `json:"url"`
+	Key string `json:"key"`
 }
 
 type S3Bucket struct {
