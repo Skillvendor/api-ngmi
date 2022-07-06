@@ -72,7 +72,7 @@ func (bucket *S3Bucket) GetSignedReadUrl(key string) (string, error) {
 
 	params := &s3.GetObjectInput{
 		Bucket: aws.String(bucket.Name),
-		Key:    aws.String(bucket.Key),
+		Key:    aws.String(key),
 	}
 
 	req, _ := svc.GetObjectRequest(params)
