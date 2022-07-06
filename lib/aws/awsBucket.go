@@ -44,10 +44,10 @@ func (bucket *S3Bucket) GetSignedUploadUrl() SignedUrlResp {
 		Credentials: credentials.NewStaticCredentials(bucket.Key, bucket.Secret, ""),
 	}))
 
-	key := generateStr(55) + ".png"
+	key := generateStr(55) + ".pdf"
 	r, _ := sess.PutObjectRequest(&s3.PutObjectInput{
 		Bucket: aws.String(bucket.Name),
-		Key:    aws.String(bucket.Key),
+		Key:    aws.String(key),
 	})
 
 	// Create the pre-signed url with an expiry
@@ -56,8 +56,6 @@ func (bucket *S3Bucket) GetSignedUploadUrl() SignedUrlResp {
 		fmt.Println("Failed to generate a pre-signed url: ", err)
 		return SignedUrlResp{}
 	}
-
-	log.Println("URL", url)
 
 	// Display the pre-signed url
 	return SignedUrlResp{
