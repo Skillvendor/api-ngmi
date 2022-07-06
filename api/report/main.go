@@ -222,7 +222,7 @@ func GetReportAdmin(w http.ResponseWriter, r *http.Request) {
 
 	newReport.FindAdmin()
 
-	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
+	err = json.NewEncoder(w).Encode(reportService.TransformToS3Urls(newReport))
 
 	if err != nil {
 		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
