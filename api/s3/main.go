@@ -28,8 +28,8 @@ func GetSignedUploadUrlReports(w http.ResponseWriter, r *http.Request) {
 }
 
 type SignedReadUrlResp struct {
-	Url string
-	Key string
+	Url string `json:"url,omitempty"`
+	Key string `json:"key,omitempty"`
 }
 
 func GetSignedDownloadUrlReports(w http.ResponseWriter, r *http.Request) {
