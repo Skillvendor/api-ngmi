@@ -51,7 +51,7 @@ func GetPublishedReports() []models.Report {
 
 	got, err := cache.LocalCache.Get(ReportCacheKey)
 	if err != nil {
-		reports = models.GetPublishedReports()
+		reports = models.GetPublishedReports(models.ReportFilterParams{})
 
 		encodedReports, errMarshal := json.Marshal(reports)
 		if errMarshal != nil {

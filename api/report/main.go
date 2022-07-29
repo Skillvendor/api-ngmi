@@ -5,6 +5,7 @@ import (
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -38,19 +39,29 @@ func filterReport(r models.Report, role string) models.Report {
 				fReport.Description = v.String()
 			case 5: // Logo
 				fReport.Logo = v.String()
-			case 6: // Chain
+			case 6: // LogoUrl
+				fReport.LogoUrl = v.String()
+			case 7: // Assets
+				fReport.Assets = v.Interface().([]string)
+			case 8: // AssetsUrls
+				fReport.AssetsUrls = v.Interface().([]string)
+			case 9: // Scores
+				fReport.Scores = v.Interface().(map[string]interface{})
+			case 10: // Tags
+				fReport.Tags = v.Interface().([]string)
+			case 11: // Chain
 				fReport.Chain = v.String()
-			case 7: // Socials
+			case 12: // Socials
 				fReport.Socials = v.Interface().(map[string]interface{})
-			case 8: // ReportDetails
+			case 13: // ReportDetails
 				fReport.ReportDetails = v.Interface().(map[string]interface{})
-			case 9: // DetailedAnalysis
+			case 14: // DetailedAnalysis
 				fReport.DetailedAnalysis = v.Interface().(map[string]interface{})
-			case 10: // ReportDetailsLink
+			case 15: // ReportDetailsLink
 				fReport.ReportDetailsLink = v.String()
-			case 11: // DetailedAnalysisLink
+			case 16: // DetailedAnalysisLink
 				fReport.DetailedAnalysisLink = v.String()
-			case 12: // Published
+			case 17: // Published
 				fReport.Published = v.Bool()
 			}
 		}
@@ -73,19 +84,25 @@ func CreateReport(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&newReport)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't decode report"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't decode report"})
 		return
 	}
 	newReport.Published = false
 
-	newReport.Save()
+	saved := newReport.Save()
+
+	if !saved {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't save report"})
+		return
+	}
 
 	err = json.NewEncoder(w).Encode(newReport)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't encode report"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't encode report"})
 		return
 	}
 }
@@ -96,8 +113,8 @@ func UpdateReport(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting id"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting id"})
 		return
 	}
 
@@ -105,8 +122,8 @@ func UpdateReport(w http.ResponseWriter, r *http.Request) {
 	newReport.Id = id
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
 		return
 	}
 
@@ -115,8 +132,8 @@ func UpdateReport(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(newReport)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		return
 	}
 }
@@ -128,8 +145,8 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 	newReport.Id = id
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
 		return
 	}
 
@@ -138,8 +155,8 @@ func GetReport(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
 		return
 	}
 }
@@ -151,8 +168,8 @@ func DeleteReport(w http.ResponseWriter, r *http.Request) {
 	newReport.Id = id
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
 		return
 	}
 
@@ -168,8 +185,8 @@ func ApproveReview(w http.ResponseWriter, r *http.Request) {
 	newReport.Id = id
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		return
 	}
 
@@ -185,8 +202,8 @@ func RejectReview(w http.ResponseWriter, r *http.Request) {
 	newReport.Id = id
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
 		return
 	}
 
@@ -197,6 +214,17 @@ func RejectReview(w http.ResponseWriter, r *http.Request) {
 
 func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
 	reports := reportService.GetPublishedReports()
+
+	fmt.Println("this is the url", r.URL.Query()["tags"])
+	gigel := r.URL.Query()["tags"]
+
+	fmt.Println("this is gigel", gigel)
+
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	json.NewEncoder(w).Encode(types.StandardError{Message: "Can't parse params"})
+	// 	return
+	// }
 
 	json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "free", filterReport))
 }
@@ -215,8 +243,8 @@ func GetReportAdmin(w http.ResponseWriter, r *http.Request) {
 	newReport.Id = id
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
 		return
 	}
 
@@ -225,8 +253,8 @@ func GetReportAdmin(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(reportService.TransformToS3Urls(newReport))
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
 		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
 		return
 	}
 }

@@ -25,12 +25,8 @@ func (user *User) Save() bool {
 
 func (user *User) Find() bool {
 	err := dbConn.DB.Model(user).Where("address = ?", user.Address).First()
-	if err != nil {
-		log.Println("Can't find", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (user *User) Update() bool {
@@ -38,10 +34,6 @@ func (user *User) Update() bool {
 		Column("Nonce", "AuthToken").
 		WherePK().
 		Update()
-	if err != nil {
-		log.Println("Can't Update", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }

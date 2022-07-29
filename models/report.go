@@ -40,10 +40,10 @@ type Report struct {
 	Description          string                 `pg:"description" visibility:"free bronze silver gold" json:"description,omitempty"`
 	Logo                 string                 `pg:"logo" visibility:"free bronze silver gold" json:"logo,omitempty"`
 	LogoUrl              string                 `pg:"-" visibility:"free bronze silver gold" json:"logo_url,omitempty"`
-	Assets               []string               `pg:"assets" visibility:"free bronze silver gold" json:"assets,omitempty"`
+	Assets               []string               `pg:"assets,array" visibility:"free bronze silver gold" json:"assets,omitempty"`
 	AssetsUrls           []string               `pg:"-" visibility:"free bronze silver gold" json:"assets_urls,omitempty"`
 	Scores               map[string]interface{} `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
-	Tags                 []string               `pg:"tags" visibility:"free bronze silver gold" json:"tags,omitempty"`
+	Tags                 []string               `pg:"tags,array" visibility:"free bronze silver gold" json:"tags,omitempty"`
 	Chain                string                 `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
 	Socials              map[string]interface{} `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
 	ReportDetails        map[string]interface{} `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
@@ -55,74 +55,44 @@ type Report struct {
 
 func (report *Report) Save() bool {
 	_, err := dbConn.DB.Model(report).Insert()
-	if err != nil {
-		log.Println("Can't insert", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (report *Report) Update() bool {
 	_, err := dbConn.DB.Model(report).WherePK().Update()
-	if err != nil {
-		log.Println("Can't Update", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (report *Report) Delete() bool {
 	_, err := dbConn.DB.Model(report).WherePK().Delete()
-	if err != nil {
-		log.Println("Can't Delete", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (report *Report) Find() bool {
 	err := dbConn.DB.Model(report).WherePK().Where("published = ?", true).First()
-	if err != nil {
-		log.Println("Can't insert", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func (report *Report) Publish() bool {
 	_, err := dbConn.DB.Model(report).Set("published = true").WherePK().Update()
 
-	if err != nil {
-		log.Println("Can't publish Report", err)
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func (report *Report) Reject() bool {
 	_, err := dbConn.DB.Model(report).Set("published = false").WherePK().Update()
 
-	if err != nil {
-		log.Println("Can't publish Report", err)
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func (report *Report) FindAdmin() bool {
 	err := dbConn.DB.Model(report).WherePK().First()
-	if err != nil {
-		log.Println("Can't insert", err)
-		return false
-	}
 
-	return true
+	return err == nil
 }
 
 func GetAllReports() []Report {
@@ -136,10 +106,23 @@ func GetAllReports() []Report {
 	return got
 }
 
-func GetPublishedReports() []Report {
+type ReportFilterParams struct {
+	tags    []string
+	chain   string
+	page    int
+	perPage int
+}
+
+func GetPublishedReports(params ReportFilterParams) []Report {
 	got := []Report{}
 
-	err := dbConn.DB.Model(&got).Where("published = ?", true).Select()
+	query := dbConn.DB.Model(&got).Where("published = ?", true)
+
+	// if params.tags {
+	// 	query.Where(("tags = "))
+	// }
+
+	err := query.Select()
 	if err != nil {
 		log.Println("Can't retrieve Reports", err)
 	}
@@ -150,21 +133,11 @@ func GetPublishedReports() []Report {
 func DeleteReportById(id int) bool {
 	_, err := dbConn.DB.Model(&Report{}).Where("Id = ?", id).Delete()
 
-	if err != nil {
-		log.Println("Can't delete Report", err)
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func ApproveReview(id int) bool {
 	_, err := dbConn.DB.Model(&Report{}).Set("published = true").Where("Id = ?", id).Update()
 
-	if err != nil {
-		log.Println("Can't publish Report", err)
-		return false
-	}
-
-	return true
+	return err == nil
 }
