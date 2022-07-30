@@ -107,7 +107,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func TestJWT(w http.ResponseWriter, r *http.Request) {
+func TestJWT(w http.ResponseWriter, r *http.Request) error {
 	anotherUser := r.Context().Value("user")
 	log.Println("I actually got the user", anotherUser)
 	authHeader := r.Header.Get("Authorization")
@@ -117,15 +117,15 @@ func TestJWT(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			w.WriteHeader(http.StatusUnauthorized)
-			return
+			return nil
 		}
 		log.Println(err)
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		return nil
 	}
 	if !tkn.Valid {
 		w.WriteHeader(http.StatusUnauthorized)
-		return
+		return nil
 	}
 
 	user := models.User{Address: claims.Address}
@@ -134,4 +134,6 @@ func TestJWT(w http.ResponseWriter, r *http.Request) {
 	ctx := context.WithValue(r.Context(), "user", user)
 	log.Println(ctx)
 	w.Write([]byte("Seems fine"))
+
+	return nil
 }

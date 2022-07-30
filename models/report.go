@@ -106,21 +106,17 @@ func GetAllReports() []Report {
 	return got
 }
 
-type ReportFilterParams struct {
-	tags    []string
-	chain   string
-	page    int
-	perPage int
-}
+// type ReportFilterParams struct {
+// 	tags    []string
+// 	chain   string
+// 	page    int
+// 	perPage int
+// }
 
-func GetPublishedReports(params ReportFilterParams) []Report {
+func GetPublishedReports() []Report {
 	got := []Report{}
 
 	query := dbConn.DB.Model(&got).Where("published = ?", true)
-
-	// if params.tags {
-	// 	query.Where(("tags = "))
-	// }
 
 	err := query.Select()
 	if err != nil {

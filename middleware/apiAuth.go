@@ -5,62 +5,77 @@ import (
 	"api-ngmi/services/auth"
 	"api-ngmi/types"
 	"context"
-	"encoding/json"
+	"errors"
 	"net/http"
 	"os"
 
 	"github.com/golang-jwt/jwt"
 )
 
-func CheckApiKey(handler func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func CheckApiKey(handler func(w http.ResponseWriter, r *http.Request) error) func(w http.ResponseWriter, r *http.Request) error {
+	return func(w http.ResponseWriter, r *http.Request) error {
 		apiKey := os.Getenv("RARITY_API_KEY")
 		ah := r.Header.Get("Authorization")
 
 		if ah == apiKey {
 			handler(w, r)
 		} else {
-			w.Write([]byte("Invalid Key Hacker!"))
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("unauthorized"),
+			}
 		}
+
+		return nil
 	}
 }
 
-func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request), accessLevel int) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, accessLevel int) func(w http.ResponseWriter, r *http.Request) error {
+	return func(w http.ResponseWriter, r *http.Request) error {
 		authHeader := r.Header.Get("Authorization")
 
 		claims, tkn, err := auth.DecodeJWT(authHeader)
 
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
+				return &types.RequestError{
+					StatusCode: http.StatusUnauthorized,
+					Err:        errors.New("unauthorized"),
+				}
 			}
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Did you provide a token?"})
-			w.WriteHeader(http.StatusBadRequest)
-			return
+
+			return &types.RequestError{
+				StatusCode: http.StatusBadRequest,
+				Err:        errors.New("did you provide a token?"),
+			}
 		}
 		if !tkn.Valid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("unauthorized"),
+			}
 		}
 
 		user := models.User{Address: claims.Address}
 		user.Find()
 
 		if user.AuthToken != authHeader {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Why do you steal tokens ?"})
-			w.WriteHeader(http.StatusUnauthorized)
-			return
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("address should have a different token"),
+			}
 		}
 
 		if user.AccessLevel < accessLevel {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Not access to this resource"})
-			w.WriteHeader(http.StatusUnauthorized)
-			return
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("no access to this resource"),
+			}
 		}
 
 		ctx := context.WithValue(r.Context(), "user", user)
 		handler(w, r.WithContext(ctx))
+
+		return nil
 	}
 }

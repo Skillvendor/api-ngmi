@@ -15,8 +15,8 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	// public
 
 	// report
-	mux.Get("/api/reports/:id", http.HandlerFunc(report.GetReport))
-	mux.Get("/api/reports", http.HandlerFunc(report.GetPublishedReports))
+	mux.Get("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetReport)))
+	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetPublishedReports)))
 
 	// user
 	mux.Get("/api/user/:address", http.HandlerFunc(user.GetPublicUser))
@@ -24,18 +24,18 @@ func InitRoutes(mux *pat.PatternServeMux) {
 
 	// auth
 	mux.Post("/api/auth/authentication", http.HandlerFunc(auth.Authentication))
-	mux.Get("/api/auth/test", http.HandlerFunc(middleware.CheckJWTToken(auth.TestJWT, 1)))
+	// mux.Get("/api/auth/test", http.HandlerFunc(middleware.CheckJWTToken(auth.TestJWT, 1)))
 
 	// private
 
 	// report
-	mux.Put("/api/reports/:id", http.HandlerFunc(report.UpdateReport))
-	mux.Del("/api/reports/:id", http.HandlerFunc(report.DeleteReport))
-	mux.Post("/api/reports", http.HandlerFunc(report.CreateReport))
-	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(report.ApproveReview))
-	mux.Patch("/api/reports/reject/:id", http.HandlerFunc(report.RejectReview))
-	mux.Get("/api/reports/admin/all", http.HandlerFunc(report.GetAllReports))
-	mux.Get("/api/reports/admin/:id", http.HandlerFunc(report.GetReportAdmin))
+	mux.Put("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.UpdateReport)))
+	mux.Del("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.DeleteReport)))
+	mux.Post("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.CreateReport)))
+	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.ApproveReview)))
+	mux.Patch("/api/reports/reject/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.RejectReview)))
+	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetAllReports)))
+	mux.Get("/api/reports/admin/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetReportAdmin)))
 
 	// s3
 	mux.Get("/api/upload/asset", http.HandlerFunc(s3.GetSignedUploadUrlAssets))

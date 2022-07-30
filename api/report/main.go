@@ -5,7 +5,7 @@ import (
 	reportService "api-ngmi/services/report"
 	"api-ngmi/types"
 	"encoding/json"
-	"fmt"
+	"errors"
 	"strconv"
 	"strings"
 
@@ -78,147 +78,202 @@ func MapFilterReport(vs []models.Report, role string, f func(models.Report, stri
 	return vsm
 }
 
-func CreateReport(w http.ResponseWriter, r *http.Request) {
+func CreateReport(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	err := json.NewDecoder(r.Body).Decode(&newReport)
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't decode report"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("can't decode report"),
+		}
 	}
 	newReport.Published = false
 
 	saved := newReport.Save()
 
 	if !saved {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't save report"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't save report"),
+		}
 	}
 
 	err = json.NewEncoder(w).Encode(newReport)
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't encode report"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("can't encode report"),
+		}
 	}
+
+	return nil
 }
 
-func UpdateReport(w http.ResponseWriter, r *http.Request) {
+func UpdateReport(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting id"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error getting id"),
+		}
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&newReport)
 	newReport.Id = id
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error decoding report"),
+		}
 	}
 
-	newReport.Update()
+	updated := newReport.Update()
+
+	if !updated {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't update report"),
+		}
+	}
 
 	err = json.NewEncoder(w).Encode(newReport)
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error encoding report"),
+		}
 	}
+
+	return nil
 }
 
-func GetReport(w http.ResponseWriter, r *http.Request) {
+func GetReport(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	newReport.Id = id
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error getting id"),
+		}
 	}
 
-	newReport.Find()
+	found := newReport.Find()
+
+	if !found {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't find report"),
+		}
+	}
 
 	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error encoding S3 url transformations"),
+		}
 	}
+
+	return nil
 }
 
-func DeleteReport(w http.ResponseWriter, r *http.Request) {
+func DeleteReport(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	newReport.Id = id
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding report"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error getting id"),
+		}
 	}
 
-	newReport.Delete()
+	deleted := newReport.Delete()
 
-	json.NewEncoder(w).Encode([]byte("Ok!"))
+	if !deleted {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't delete report"),
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	return nil
 }
 
-func ApproveReview(w http.ResponseWriter, r *http.Request) {
+func ApproveReview(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	newReport.Id = id
 
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("error encoding report"),
+		}
 	}
 
-	newReport.Publish()
+	published := newReport.Publish()
+
+	if !published {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't publish report"),
+		}
+	}
 
 	json.NewEncoder(w).Encode(newReport)
+
+	return nil
 }
 
-func RejectReview(w http.ResponseWriter, r *http.Request) {
+func RejectReview(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	newReport.Id = id
 
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("error encoding report"),
+		}
 	}
 
-	newReport.Reject()
+	rejected := newReport.Reject()
+
+	if !rejected {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't reject report"),
+		}
+	}
 
 	json.NewEncoder(w).Encode(newReport)
+
+	return nil
 }
 
-func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
+func GetPublishedReports(w http.ResponseWriter, r *http.Request) error {
 	reports := reportService.GetPublishedReports()
 
-	fmt.Println("this is the url", r.URL.Query()["tags"])
-	gigel := r.URL.Query()["tags"]
-
-	fmt.Println("this is gigel", gigel)
+	// gigel := r.URL.Query()["tags"]
 
 	// if err != nil {
 	// 	w.WriteHeader(http.StatusBadRequest)
@@ -226,35 +281,64 @@ func GetPublishedReports(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 
-	json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "free", filterReport))
+	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "free", filterReport))
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("can't encode reports"),
+		}
+	}
+
+	return nil
 }
 
 // only for admin
-func GetAllReports(w http.ResponseWriter, r *http.Request) {
+func GetAllReports(w http.ResponseWriter, r *http.Request) error {
 	reports := models.GetAllReports()
 
-	json.NewEncoder(w).Encode(reportService.MapToS3Urls(reports))
+	err := json.NewEncoder(w).Encode(reportService.MapToS3Urls(reports))
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("can't encode report"),
+		}
+	}
+
+	return nil
 }
 
-func GetReportAdmin(w http.ResponseWriter, r *http.Request) {
+func GetReportAdmin(w http.ResponseWriter, r *http.Request) error {
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	newReport.Id = id
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Getting Id"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error getting it"),
+		}
 	}
 
-	newReport.FindAdmin()
+	found := newReport.FindAdmin()
+
+	if !found {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't find report"),
+		}
+	}
 
 	err = json.NewEncoder(w).Encode(reportService.TransformToS3Urls(newReport))
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 url transformations"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error Encoding S3 url transformations"),
+		}
 	}
+
+	return nil
 }
