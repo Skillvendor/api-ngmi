@@ -6,6 +6,7 @@ import (
 	"api-ngmi/types"
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"math/rand"
 	"strconv"
@@ -42,69 +43,74 @@ func verifySig(from, sigHex string, msg []byte) bool {
 
 	recoveredAddr := crypto.PubkeyToAddress(*recovered)
 
-	return strings.ToLower(from) == strings.ToLower(recoveredAddr.Hex())
+	return strings.EqualFold(from, recoveredAddr.Hex())
 }
 
-func Authentication(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		newSignature := SignatureData{}
+func Authentication(w http.ResponseWriter, r *http.Request) error {
+	newSignature := SignatureData{}
 
-		err := json.NewDecoder(r.Body).Decode(&newSignature)
-		if err != nil {
-			log.Println("Error decoding body", err)
-			return
+	err := json.NewDecoder(r.Body).Decode(&newSignature)
+	if err != nil {
+		log.Println("Error decoding body", err)
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error decoding body"),
 		}
-
-		if newSignature.Address == "" {
-			log.Println("No Address provided")
-			return
-		}
-
-		user := models.User{Address: newSignature.Address}
-		user.Find()
-
-		msg := "I am signing my one-time nonce: " + user.Nonce
-
-		signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
-
-		if !signed {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "No Hackers Allowed"})
-			w.WriteHeader(http.StatusUnauthorized)
-		}
-
-		address := user.Address
-		newPayload := auth.JWTPayload{
-			Address:        address,
-			ExpirationTime: auth.AuthTokenExpirationTime,
-		}
-
-		authToken := auth.CreateJWT(newPayload)
-
-		user.AuthToken = authToken
-		rand.Seed(time.Now().UnixNano())
-		user.Nonce = strconv.Itoa(rand.Int())
-		user.Update()
-
-		err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})
-
-		if err != nil {
-			json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding Token"})
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
-		// Finally, we set the client cookie for "Authorization" as the JWT we just generated
-		// we also set an expiry time which is the same as the token itself
-		http.SetCookie(w, &http.Cookie{
-			Name:    "Authorization",
-			Value:   authToken,
-			Expires: auth.AuthTokenExpirationTime,
-		})
-	default:
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Expected a POST request"})
-		w.WriteHeader(http.StatusBadRequest)
 	}
+
+	if newSignature.Address == "" {
+		log.Println("No Address provided")
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("no address provided"),
+		}
+	}
+
+	user := models.User{Address: newSignature.Address}
+	user.Find()
+
+	msg := "I am signing my one-time nonce: " + user.Nonce
+
+	signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
+
+	if !signed {
+		return &types.RequestError{
+			StatusCode: http.StatusUnauthorized,
+			Err:        errors.New("signature invalid"),
+		}
+	}
+
+	address := user.Address
+	newPayload := auth.JWTPayload{
+		Address:        address,
+		ExpirationTime: auth.AuthTokenExpirationTime,
+	}
+
+	authToken := auth.CreateJWT(newPayload)
+
+	user.AuthToken = authToken
+	rand.Seed(time.Now().UnixNano())
+	user.Nonce = strconv.Itoa(rand.Int())
+	user.Update()
+
+	err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error encoding token"),
+		}
+	}
+
+	// Finally, we set the client cookie for "Authorization" as the JWT we just generated
+	// we also set an expiry time
+	http.SetCookie(w, &http.Cookie{
+		Name:    "Authorization",
+		Value:   authToken,
+		Expires: auth.AuthTokenExpirationTime,
+	})
+
+	return nil
 }
 
 func TestJWT(w http.ResponseWriter, r *http.Request) error {

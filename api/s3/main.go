@@ -4,27 +4,34 @@ import (
 	"api-ngmi/services/s3"
 	"api-ngmi/types"
 	"encoding/json"
+	"errors"
 	"net/http"
 )
 
-func GetSignedUploadUrlAssets(w http.ResponseWriter, r *http.Request) {
+func GetSignedUploadUrlAssets(w http.ResponseWriter, r *http.Request) error {
 	err := json.NewEncoder(w).Encode(s3.AssetsBucket.GetSignedUploadUrl())
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 Upload Url"})
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("Error encoding s3 upload url"),
+		}
 	}
+
+	return nil
 }
 
-func GetSignedUploadUrlReports(w http.ResponseWriter, r *http.Request) {
+func GetSignedUploadUrlReports(w http.ResponseWriter, r *http.Request) error {
 	err := json.NewEncoder(w).Encode(s3.ReportsBucket.GetSignedUploadUrl())
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 Upload Url"})
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("Error encoding s3 upload url"),
+		}
 	}
+
+	return nil
 }
 
 type SignedReadUrlResp struct {
@@ -32,28 +39,33 @@ type SignedReadUrlResp struct {
 	Key string `json:"key"`
 }
 
-func GetSignedDownloadUrlReports(w http.ResponseWriter, r *http.Request) {
+func GetSignedDownloadUrlReports(w http.ResponseWriter, r *http.Request) error {
 	key := r.URL.Query().Get(":key")
 
 	if key == "" {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "No key provided"})
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("No Key provided"),
+		}
 	}
 
 	url, err := s3.ReportsBucket.GetSignedReadUrl(key)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Can't get url"})
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't get url"),
+		}
 	}
 
 	err = json.NewEncoder(w).Encode(SignedReadUrlResp{Url: url, Key: key})
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding S3 Report Download Url"})
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error Encoding S3 Report Download Url"),
+		}
 	}
+
+	return nil
 }

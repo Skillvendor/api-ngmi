@@ -19,11 +19,11 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetPublishedReports)))
 
 	// user
-	mux.Get("/api/user/:address", http.HandlerFunc(user.GetPublicUser))
-	mux.Post("/api/user", http.HandlerFunc(user.CreateUser))
+	mux.Get("/api/user/:address", http.HandlerFunc(middleware.ApplyStandardMiddlewares(user.GetPublicUser)))
+	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(user.CreateUser)))
 
 	// auth
-	mux.Post("/api/auth/authentication", http.HandlerFunc(auth.Authentication))
+	mux.Post("/api/auth/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(auth.Authentication)))
 	// mux.Get("/api/auth/test", http.HandlerFunc(middleware.CheckJWTToken(auth.TestJWT, 1)))
 
 	// private
@@ -38,9 +38,9 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports/admin/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetReportAdmin)))
 
 	// s3
-	mux.Get("/api/upload/asset", http.HandlerFunc(s3.GetSignedUploadUrlAssets))
-	mux.Get("/api/upload/report", http.HandlerFunc(s3.GetSignedUploadUrlReports))
-	mux.Get("/api/upload/report/read/:key", http.HandlerFunc(s3.GetSignedDownloadUrlReports))
+	mux.Get("/api/upload/asset", http.HandlerFunc(middleware.ApplyStandardMiddlewares(s3.GetSignedUploadUrlAssets)))
+	mux.Get("/api/upload/report", http.HandlerFunc(middleware.ApplyStandardMiddlewares(s3.GetSignedUploadUrlReports)))
+	mux.Get("/api/upload/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(s3.GetSignedDownloadUrlReports)))
 
 	http.Handle("/", mux)
 }

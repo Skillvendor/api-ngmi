@@ -4,6 +4,7 @@ import (
 	"api-ngmi/models"
 	"api-ngmi/types"
 	"encoding/json"
+	"errors"
 	"math/rand"
 	"strconv"
 	"time"
@@ -11,20 +12,23 @@ import (
 	"net/http"
 )
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) error {
 	newUser := models.User{}
 
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Decoding User"})
-		w.WriteHeader(http.StatusInternalServerError)
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("error decoding user"),
+		}
 	}
 
 	if newUser.Address == "" {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "No Address Given"})
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("no address given"),
+		}
 	}
 
 	newUser.Find()
@@ -41,13 +45,16 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(newUser)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error encoding user"),
+		}
 	}
+
+	return nil
 }
 
-func GetPublicUser(w http.ResponseWriter, r *http.Request) {
+func GetPublicUser(w http.ResponseWriter, r *http.Request) error {
 	newUser := models.User{}
 
 	address := r.URL.Query().Get(":address")
@@ -55,23 +62,29 @@ func GetPublicUser(w http.ResponseWriter, r *http.Request) {
 	newUser.Address = address
 
 	if newUser.Address == "" {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "No Address provided"})
-		w.WriteHeader(http.StatusBadRequest)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("no address given"),
+		}
 	}
 
 	newUser.Find()
 
 	if newUser.Id == 0 {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "No User Found"})
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("no user found"),
+		}
 	}
 
 	err := json.NewEncoder(w).Encode(newUser)
 
 	if err != nil {
-		json.NewEncoder(w).Encode(types.StandardError{Message: "Error Encoding User"})
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("error encoding user"),
+		}
 	}
+
+	return nil
 }
