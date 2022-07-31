@@ -51,7 +51,6 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 
 	err := json.NewDecoder(r.Body).Decode(&newSignature)
 	if err != nil {
-		log.Println("Error decoding body", err)
 		return &types.RequestError{
 			StatusCode: http.StatusInternalServerError,
 			Err:        errors.New("error decoding body"),
@@ -59,7 +58,6 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if newSignature.Address == "" {
-		log.Println("No Address provided")
 		return &types.RequestError{
 			StatusCode: http.StatusBadRequest,
 			Err:        errors.New("no address provided"),
@@ -67,7 +65,14 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	user := models.User{Address: newSignature.Address}
-	user.Find()
+	found := user.Find()
+
+	if !found {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("user does not exist"),
+		}
+	}
 
 	msg := "I am signing my one-time nonce: " + user.Nonce
 
@@ -86,7 +91,14 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 		ExpirationTime: auth.AuthTokenExpirationTime,
 	}
 
-	authToken := auth.CreateJWT(newPayload)
+	authToken, jwtError := auth.CreateJWT(newPayload)
+
+	if jwtError != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't generate token"),
+		}
+	}
 
 	user.AuthToken = authToken
 	rand.Seed(time.Now().UnixNano())

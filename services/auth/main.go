@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"log"
+	"errors"
 	"os"
 	"time"
 
@@ -22,7 +22,7 @@ type Claims struct {
 
 var AuthTokenExpirationTime = time.Now().Add(24 * time.Hour)
 
-func CreateJWT(payload JWTPayload) string {
+func CreateJWT(payload JWTPayload) (string, error) {
 	jwtKey := os.Getenv("JWT_SECRET")
 
 	// Declare the expiration time of the token
@@ -44,11 +44,10 @@ func CreateJWT(payload JWTPayload) string {
 	tokenString, err := token.SignedString([]byte(jwtKey))
 	if err != nil {
 		// If there is an error in creating the JWT return an internal server error
-		log.Println("Can't generate JWT", err)
-		return ""
+		return "", errors.New("can't generate token")
 	}
 
-	return tokenString
+	return tokenString, nil
 }
 
 func DecodeJWT(token string) (*Claims, *jwt.Token, error) {
