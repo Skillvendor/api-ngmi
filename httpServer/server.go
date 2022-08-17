@@ -25,6 +25,7 @@ func Run() {
 			"http://localhost:3000",
 			"http://127.0.0.1:3000",
 			"https://ngmi-admin-dev.netlify.app",
+			"https://ngmi-dev.netlify.app",
 			"https://ngmi-admin-prod.netlify.app",
 			"https://magic-carpet-dev.netlify.app",
 			"https://magic-carpet.netlify.app",
