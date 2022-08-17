@@ -33,24 +33,24 @@ type MintDetails struct {
 }
 
 type Report struct {
-	Id                   int                    `pg:"id" visibility:"free bronze silver gold" json:"id,omitempty"`
-	CreatedAt            string                 `pg:"created_at" visibility:"free bronze silver gold" json:"created_at,omitempty"`
-	UpdatedAt            string                 `pg:"updated_at" visibility:"free bronze silver gold" json:"updated_at,omitempty"`
-	Name                 string                 `pg:"name" visibility:"free bronze silver gold" json:"name,omitempty"`
-	Description          string                 `pg:"description" visibility:"free bronze silver gold" json:"description,omitempty"`
-	Logo                 string                 `pg:"logo" visibility:"free bronze silver gold" json:"logo,omitempty"`
-	LogoUrl              string                 `pg:"-" visibility:"free bronze silver gold" json:"logo_url,omitempty"`
-	Assets               []string               `pg:"assets,array" visibility:"free bronze silver gold" json:"assets,omitempty"`
-	AssetsUrls           []string               `pg:"-" visibility:"free bronze silver gold" json:"assets_urls,omitempty"`
-	Scores               map[string]interface{} `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
-	Tags                 []string               `pg:"tags,array" visibility:"free bronze silver gold" json:"tags,omitempty"`
-	Chain                string                 `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
-	Socials              map[string]interface{} `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
-	ReportDetails        map[string]interface{} `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
-	DetailedAnalysis     map[string]interface{} `pg:"detailed_analysis" visibility:"gold" json:"detailed_analysis,omitempty"`
-	ReportDetailsLink    string                 `pg:"report_details_link" visibility:"silver gold" json:"report_details_link,omitempty"`
-	DetailedAnalysisLink string                 `pg:"detailed_analysis_link" visibility:"gold" json:"detailed_analysis_link,omitempty"`
-	Published            bool                   `pg:"published" visibility:"free bronze silver gold" json:"published,omitempty"`
+	Id                   int                      `pg:"id" visibility:"free bronze silver gold" json:"id,omitempty"`
+	CreatedAt            string                   `pg:"created_at" visibility:"free bronze silver gold" json:"created_at,omitempty"`
+	UpdatedAt            string                   `pg:"updated_at" visibility:"free bronze silver gold" json:"updated_at,omitempty"`
+	Name                 string                   `pg:"name" visibility:"free bronze silver gold" json:"name,omitempty"`
+	Description          string                   `pg:"description" visibility:"free bronze silver gold" json:"description,omitempty"`
+	Logo                 string                   `pg:"logo" visibility:"free bronze silver gold" json:"logo,omitempty"`
+	LogoUrl              string                   `pg:"-" visibility:"free bronze silver gold" json:"logo_url,omitempty"`
+	Assets               []string                 `pg:"assets,array" visibility:"free bronze silver gold" json:"assets,omitempty"`
+	AssetsUrls           []string                 `pg:"-" visibility:"free bronze silver gold" json:"assets_urls,omitempty"`
+	Scores               []map[string]interface{} `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
+	Tags                 []string                 `pg:"tags,array" visibility:"free bronze silver gold" json:"tags,omitempty"`
+	Chain                string                   `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
+	Socials              []map[string]interface{} `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
+	ReportDetails        []map[string]interface{} `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
+	DetailedAnalysis     []map[string]interface{} `pg:"detailed_analysis" visibility:"gold" json:"detailed_analysis,omitempty"`
+	ReportDetailsLink    string                   `pg:"report_details_link" visibility:"silver gold" json:"report_details_link,omitempty"`
+	DetailedAnalysisLink string                   `pg:"detailed_analysis_link" visibility:"gold" json:"detailed_analysis_link,omitempty"`
+	Published            bool                     `pg:"published" visibility:"free bronze silver gold" json:"published,omitempty"`
 }
 
 func (report *Report) Save() bool {
@@ -105,13 +105,6 @@ func GetAllReports() []Report {
 
 	return got
 }
-
-// type ReportFilterParams struct {
-// 	tags    []string
-// 	chain   string
-// 	page    int
-// 	perPage int
-// }
 
 func GetPublishedReports() []Report {
 	got := []Report{}

@@ -6,6 +6,7 @@ import (
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -46,17 +47,17 @@ func filterReport(r models.Report, role string) models.Report {
 			case 8: // AssetsUrls
 				fReport.AssetsUrls = v.Interface().([]string)
 			case 9: // Scores
-				fReport.Scores = v.Interface().(map[string]interface{})
+				fReport.Scores = v.Interface().([]map[string]interface{})
 			case 10: // Tags
 				fReport.Tags = v.Interface().([]string)
 			case 11: // Chain
 				fReport.Chain = v.String()
 			case 12: // Socials
-				fReport.Socials = v.Interface().(map[string]interface{})
+				fReport.Socials = v.Interface().([]map[string]interface{})
 			case 13: // ReportDetails
-				fReport.ReportDetails = v.Interface().(map[string]interface{})
+				fReport.ReportDetails = v.Interface().([]map[string]interface{})
 			case 14: // DetailedAnalysis
-				fReport.DetailedAnalysis = v.Interface().(map[string]interface{})
+				fReport.DetailedAnalysis = v.Interface().([]map[string]interface{})
 			case 15: // ReportDetailsLink
 				fReport.ReportDetailsLink = v.String()
 			case 16: // DetailedAnalysisLink
@@ -84,6 +85,7 @@ func CreateReport(w http.ResponseWriter, r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&newReport)
 
 	if err != nil {
+		fmt.Println(err)
 		return &types.RequestError{
 			StatusCode: http.StatusInternalServerError,
 			Err:        errors.New("can't decode report"),
