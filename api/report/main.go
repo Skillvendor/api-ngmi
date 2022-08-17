@@ -177,7 +177,7 @@ func GetReport(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "free"))
+	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "gold"))
 
 	if err != nil {
 		return &types.RequestError{
@@ -281,7 +281,7 @@ func GetPublishedReports(w http.ResponseWriter, r *http.Request) error {
 	// 	return
 	// }
 
-	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "free", filterReport))
+	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "gold", filterReport))
 
 	if err != nil {
 		return &types.RequestError{
