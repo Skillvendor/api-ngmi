@@ -45,8 +45,8 @@ type Report struct {
 	Scores               []map[string]interface{} `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
 	Tags                 []string                 `pg:"tags,array" visibility:"free bronze silver gold" json:"tags,omitempty"`
 	Chain                string                   `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
-	Socials              []map[string]interface{} `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
-	ReportDetails        []map[string]interface{} `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
+	Socials              map[string]interface{}   `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`
+	ReportDetails        map[string]interface{}   `pg:"report_details" visibility:"silver gold" json:"report_details,omitempty"`
 	DetailedAnalysis     []map[string]interface{} `pg:"detailed_analysis" visibility:"gold" json:"detailed_analysis,omitempty"`
 	ReportDetailsLink    string                   `pg:"report_details_link" visibility:"silver gold" json:"report_details_link,omitempty"`
 	DetailedAnalysisLink string                   `pg:"detailed_analysis_link" visibility:"gold" json:"detailed_analysis_link,omitempty"`

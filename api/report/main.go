@@ -53,9 +53,9 @@ func filterReport(r models.Report, role string) models.Report {
 			case 11: // Chain
 				fReport.Chain = v.String()
 			case 12: // Socials
-				fReport.Socials = v.Interface().([]map[string]interface{})
+				fReport.Socials = v.Interface().(map[string]interface{})
 			case 13: // ReportDetails
-				fReport.ReportDetails = v.Interface().([]map[string]interface{})
+				fReport.ReportDetails = v.Interface().(map[string]interface{})
 			case 14: // DetailedAnalysis
 				fReport.DetailedAnalysis = v.Interface().([]map[string]interface{})
 			case 15: // ReportDetailsLink
