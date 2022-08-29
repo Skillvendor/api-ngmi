@@ -31,7 +31,7 @@ func (admin *Admin) Find() bool {
 
 func (admin *Admin) Update() bool {
 	_, err := dbConn.DB.Model(admin).
-		Column("AuthToken").
+		Column("auth_token").
 		WherePK().
 		Update()
 

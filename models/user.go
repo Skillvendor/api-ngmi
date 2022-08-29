@@ -31,7 +31,7 @@ func (user *User) Find() bool {
 
 func (user *User) Update() bool {
 	_, err := dbConn.DB.Model(user).
-		Column("Nonce", "AuthToken").
+		Column("nonce", "auth_token").
 		WherePK().
 		Update()
 
