@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func CreateUser(w http.ResponseWriter, r *http.Request) error {
+func Create(w http.ResponseWriter, r *http.Request) error {
 	newUser := models.User{}
 
 	err := json.NewDecoder(r.Body).Decode(&newUser)
@@ -54,7 +54,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func GetPublicUser(w http.ResponseWriter, r *http.Request) error {
+func Show(w http.ResponseWriter, r *http.Request) error {
 	newUser := models.User{}
 
 	address := r.URL.Query().Get(":address")

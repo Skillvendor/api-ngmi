@@ -1,6 +1,7 @@
 package httpServer
 
 import (
+	"api-ngmi/api/admin"
 	"api-ngmi/api/auth"
 	"api-ngmi/api/report"
 	"api-ngmi/api/s3"
@@ -19,12 +20,12 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(report.GetPublishedReports)))
 
 	// user
-	mux.Get("/api/user/:address", http.HandlerFunc(middleware.ApplyStandardMiddlewares(user.GetPublicUser)))
-	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(user.CreateUser)))
+	mux.Get("/api/user/:address", http.HandlerFunc(middleware.ApplyStandardMiddlewares(user.Show)))
+	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(user.Create)))
 
 	// auth
 	mux.Post("/api/auth/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(auth.Authentication)))
-	// mux.Get("/api/auth/test", http.HandlerFunc(middleware.CheckJWTToken(auth.TestJWT, 1)))
+	mux.Get("/api/auth/test", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(auth.TestJWT, 1))))
 
 	// private
 
@@ -41,6 +42,9 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/upload/asset", http.HandlerFunc(middleware.ApplyStandardMiddlewares(s3.GetSignedUploadUrlAssets)))
 	mux.Get("/api/upload/report", http.HandlerFunc(middleware.ApplyStandardMiddlewares(s3.GetSignedUploadUrlReports)))
 	mux.Get("/api/upload/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(s3.GetSignedDownloadUrlReports)))
+
+	// admin
+	mux.Post("/api/auth/admin/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(admin.Authentication)))
 
 	http.Handle("/", mux)
 }

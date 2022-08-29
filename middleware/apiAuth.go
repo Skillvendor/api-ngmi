@@ -6,6 +6,7 @@ import (
 	"api-ngmi/types"
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -75,6 +76,58 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 
 		ctx := context.WithValue(r.Context(), "user", user)
 		handler(w, r.WithContext(ctx))
+
+		return nil
+	}
+}
+
+func CheckAdminJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, accessLevel int) func(w http.ResponseWriter, r *http.Request) error {
+	return func(w http.ResponseWriter, r *http.Request) error {
+		authHeader := r.Header.Get("Authorization")
+
+		claims, tkn, err := auth.DecodeJWT(authHeader)
+
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				return &types.RequestError{
+					StatusCode: http.StatusUnauthorized,
+					Err:        errors.New("unauthorized"),
+				}
+			}
+
+			return &types.RequestError{
+				StatusCode: http.StatusBadRequest,
+				Err:        errors.New("did you provide a token?"),
+			}
+		}
+		if !tkn.Valid {
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("unauthorized"),
+			}
+		}
+
+		admin := models.Admin{Username: claims.Username}
+		admin.Find()
+
+		if admin.AuthToken != authHeader {
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("address should have a different token"),
+			}
+		}
+
+		if admin.AccessLevel < accessLevel {
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("no access to this resource"),
+			}
+		}
+
+		ctx := context.WithValue(r.Context(), "user", admin)
+		handler(w, r.WithContext(ctx))
+
+		fmt.Println("this is the admin", admin)
 
 		return nil
 	}

@@ -6,17 +6,20 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type JWTPayload struct {
 	Address        string
+	Username       string
 	ExpirationTime time.Time
 }
 
 // Create a struct that will be encoded to a JWT.
 // We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
 type Claims struct {
-	Address string `json:"address"`
+	Address  string `json:"address"`
+	Username string `json:"username"`
 	jwt.StandardClaims
 }
 
@@ -31,7 +34,8 @@ func CreateJWT(payload JWTPayload) (string, error) {
 
 	// Create the JWT claims, which includes the username and expiry time
 	claims := &Claims{
-		Address: payload.Address,
+		Address:  payload.Address,
+		Username: payload.Username,
 		StandardClaims: jwt.StandardClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: expirationTime.Unix(),
@@ -65,4 +69,14 @@ func DecodeJWT(token string) (*Claims, *jwt.Token, error) {
 	})
 
 	return claims, tkn, err
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
