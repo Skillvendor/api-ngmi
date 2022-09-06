@@ -11,12 +11,12 @@ import (
 )
 
 type LoginInfo struct {
-	Username string
-	Password string
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
 }
 
 type AuthResponse struct {
-	Token string
+	Token string `json:"token,omitempty"`
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) error {
