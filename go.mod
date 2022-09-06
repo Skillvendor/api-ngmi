@@ -1,6 +1,6 @@
 module api-ngmi
 
-go 1.17
+go 1.19
 
 require github.com/ethereum/go-ethereum v1.10.21
 
