@@ -22,12 +22,12 @@ import (
 )
 
 type SignatureData struct {
-	Address   string
-	Signature string
+	Address   string `json:"address,omitempty"`
+	Signature string `json:"signature,omitempty"`
 }
 
 type AuthResponse struct {
-	Token string
+	Token string `json:"token,omitempty"`
 }
 
 func verifySig(from, sigHex string, msg []byte) bool {
