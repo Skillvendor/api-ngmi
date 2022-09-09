@@ -6,6 +6,8 @@ import (
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
+	"log"
+	"time"
 
 	"net/http"
 )
@@ -20,6 +22,9 @@ type AuthResponse struct {
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) error {
+	startAll := time.Now()
+	start := time.Now()
+
 	newLoginInfo := LoginInfo{}
 
 	err := json.NewDecoder(r.Body).Decode(&newLoginInfo)
@@ -44,6 +49,10 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
+	elapsed := time.Since(start)
+	log.Printf("Decoding took %s", elapsed)
+
+	start = time.Now()
 	admin := models.Admin{Username: newLoginInfo.Username}
 	found := admin.Find()
 
@@ -53,8 +62,14 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 			Err:        errors.New("admin does not exist"),
 		}
 	}
+	elapsed = time.Since(start)
+	log.Printf("GettingAdmin took %s", elapsed)
 
+	start = time.Now()
 	okPass := auth.CheckPasswordHash(newLoginInfo.Password, admin.Password)
+
+	elapsed = time.Since(start)
+	log.Printf("CheckPassHash took %s", elapsed)
 
 	if !okPass {
 		return &types.RequestError{
@@ -63,6 +78,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
+	start = time.Now()
 	newPayload := auth.JWTPayload{
 		Username:       admin.Username,
 		ExpirationTime: auth.AuthTokenExpirationTime,
@@ -76,7 +92,10 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 			Err:        errors.New("can't generate token"),
 		}
 	}
+	elapsed = time.Since(start)
+	log.Printf("Creating JWT took %s", elapsed)
 
+	start = time.Now()
 	admin.AuthToken = authToken
 	updated := admin.Update()
 
@@ -86,6 +105,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 			Err:        errors.New("something went wrong"),
 		}
 	}
+	elapsed = time.Since(start)
+	log.Printf("Updating admin took %s", elapsed)
 
 	err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})
 
@@ -103,6 +124,9 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 		Value:   authToken,
 		Expires: auth.AuthTokenExpirationTime,
 	})
+
+	elapsed = time.Since(startAll)
+	log.Printf("All took %s", elapsed)
 
 	return nil
 }
