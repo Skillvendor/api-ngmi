@@ -23,7 +23,7 @@ require (
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
-	github.com/ethereum/go-ethereum v1.10.24 // indirect
+	github.com/ethereum/go-ethereum v1.10.25 // indirect
 	github.com/go-pg/zerochecker v0.2.0 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/jinzhu/copier v0.3.5 // indirect
