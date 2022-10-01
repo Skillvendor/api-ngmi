@@ -3,6 +3,7 @@ package auth
 import (
 	"api-ngmi/models"
 	"api-ngmi/services/auth"
+	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"context"
 	"encoding/json"
@@ -85,9 +86,17 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	address := user.Address
+	userAccessLevel, err := userService.AccessLevelFor(&user)
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("can't get access level"),
+		}
+	}
+
 	newPayload := auth.JWTPayload{
-		Address:        address,
+		Address:        user.Address,
+		AccessLevel:    userAccessLevel,
 		ExpirationTime: auth.AuthTokenExpirationTime,
 	}
 
