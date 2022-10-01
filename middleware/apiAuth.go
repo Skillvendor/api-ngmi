@@ -67,7 +67,7 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 			}
 		}
 
-		if user.AccessLevel < accessLevel {
+		if claims.AccessLevel < accessLevel {
 			return &types.RequestError{
 				StatusCode: http.StatusUnauthorized,
 				Err:        errors.New("no access to this resource"),
