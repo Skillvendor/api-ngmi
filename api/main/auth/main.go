@@ -129,8 +129,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 }
 
 func TestJWT(w http.ResponseWriter, r *http.Request) error {
-	anotherUser := r.Context().Value("user")
-	log.Println("I actually got the user", anotherUser)
+	var newUser models.User = r.Context().Value("user").(models.User)
+	log.Println("I actually got the user", newUser.Address)
 	authHeader := r.Header.Get("Authorization")
 
 	claims, tkn, err := auth.DecodeJWT(authHeader)
