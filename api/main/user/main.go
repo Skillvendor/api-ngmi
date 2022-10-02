@@ -2,6 +2,7 @@ package user
 
 import (
 	"api-ngmi/models"
+	"api-ngmi/redis"
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
@@ -89,9 +90,17 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// func ResetAccessLevel(w http.ResponseWriter, r *http.Request) error {
-// 	var user models.User = r.Context().Value("user")
+func ResetAccessLevelCache(w http.ResponseWriter, r *http.Request) error {
+	var user models.User = r.Context().Value("user").(models.User)
 
-// 	redis.PurgeAccessLevelCacheFor(user.Address)
+	_, err := redis.PurgeAccessLevelCacheFor(user.Address)
 
-// }
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't purge cache for user"),
+		}
+	}
+
+	return nil
+}

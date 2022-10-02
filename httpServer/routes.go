@@ -35,6 +35,10 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/upload/report", http.HandlerFunc(middleware.ApplyStandardMiddlewares(commonS3Ctrl.GetSignedUploadUrlReports)))
 	mux.Get("/api/upload/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(commonS3Ctrl.GetSignedDownloadUrlReports)))
 
+	// user
+
+	mux.Post("api/user/refreshAccessLevelCache", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainUserCtrl.ResetAccessLevelCache, 0))))
+
 	// admin
 
 	// report
