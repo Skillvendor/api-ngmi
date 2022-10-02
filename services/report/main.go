@@ -1,16 +1,10 @@
 package report
 
 import (
-	"api-ngmi/lib/cache"
 	"api-ngmi/models"
+	"api-ngmi/redis"
 	"api-ngmi/services/s3"
-	"log"
-
-	"encoding/json"
 )
-
-var ReportCacheKey []byte = []byte("published_reports")
-var ReportCacheExpiry int = 5 * 60 // 5 minutes
 
 func MapReport(vs []models.Report, f func(models.Report) models.Report) []models.Report {
 	vsm := make([]models.Report, len(vs))
@@ -50,22 +44,11 @@ func MapToS3Urls(cs []models.Report) []models.Report {
 func GetPublishedReports() []models.Report {
 	var reports []models.Report
 
-	got, err := cache.LocalCache.Get(ReportCacheKey)
-	if err != nil {
+	reports, err := redis.PublishedReportsFromCache()
+	if err != nil || reports == nil {
 		reports = models.GetPublishedReports()
 
-		encodedReports, errMarshal := json.Marshal(reports)
-		if errMarshal != nil {
-			log.Println("encode error:", err)
-		}
-
-		cache.LocalCache.Set(ReportCacheKey, encodedReports, ReportCacheExpiry)
-	} else {
-
-		err = json.Unmarshal(got, &reports)
-		if err != nil {
-			log.Println("decode error:", err)
-		}
+		redis.CachePublishedReports(reports)
 	}
 
 	return reports
