@@ -32,16 +32,17 @@ func init() {
 	}
 
 	QuickNode := os.Getenv("QUICKNODE_NODE")
+	InfuraNode := os.Getenv("INFURA_NODE")
 
-	// NTS1 = EthContract{
-	// 	NodeProvider: InfuraNode,
-	// 	HexAddress:   NTS1Addr,
-	// }
+	NTS1 = EthContract{
+		NodeProvider: InfuraNode,
+		HexAddress:   NTS1Addr,
+	}
 
-	// NTS2 = EthContract{
-	// 	NodeProvider: InfuraNode,
-	// 	HexAddress:   NTS2Addr,
-	// }
+	NTS2 = EthContract{
+		NodeProvider: InfuraNode,
+		HexAddress:   NTS2Addr,
+	}
 
 	NgmiTreasury = EthContract{
 		NodeProvider: QuickNode,

@@ -88,3 +88,10 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 
 	return nil
 }
+
+// func ResetAccessLevel(w http.ResponseWriter, r *http.Request) error {
+// 	var user models.User = r.Context().Value("user")
+
+// 	redis.PurgeAccessLevelCacheFor(user.Address)
+
+// }

@@ -45,3 +45,14 @@ func AccessLevelFor(address string) (int, error) {
 
 	return wanted.AccessLevel, nil
 }
+
+func PurgeAccessLevelCacheFor(address string) (bool, error) {
+	ctx := context.TODO()
+	key := fmt.Sprintf("accessLevel-%s", address)
+
+	if err := Cache.Delete(ctx, key); err != nil {
+		return false, err
+	}
+
+	return true, nil
+}

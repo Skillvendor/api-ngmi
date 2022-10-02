@@ -1,17 +1,43 @@
 package user
 
 import (
+	"api-ngmi/constants"
 	"api-ngmi/cryptoEth"
-	"api-ngmi/models"
-	"errors"
+	"api-ngmi/lib/utils"
+	"api-ngmi/redis"
 )
 
-func AccessLevelFor(user *models.User) (int, error) {
-	tier, err := cryptoEth.TierFor(user.Address)
-	if err != nil {
-		// If there is an error in creating the JWT return an internal server error
-		return 0, errors.New("can't get tier")
+func TierFor(address string) int {
+	isS1, _ := cryptoEth.HasNTS1(address)
+	if isS1 {
+		return constants.Gold
 	}
 
-	return tier, nil
+	tier, _ := cryptoEth.TreasuryTierFor(address)
+	if tier > 0 {
+		return tier
+	}
+
+	isS2, _ := cryptoEth.HasNTS2(address)
+	if isS2 {
+		return utils.Max(constants.Silver, tier)
+	}
+
+	if tier > 0 {
+		return tier
+	}
+
+	return 0
+}
+
+func AccessLevelFor(address string) int {
+	tier, err := redis.AccessLevelFor(address)
+	if err != nil {
+		return tier
+	}
+
+	tier = TierFor(address)
+	redis.CacheAccessLevelFor(address, tier)
+
+	return tier
 }

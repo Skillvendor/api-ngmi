@@ -86,13 +86,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	userAccessLevel, err := userService.AccessLevelFor(&user)
-	if err != nil {
-		return &types.RequestError{
-			StatusCode: http.StatusInternalServerError,
-			Err:        errors.New("can't get access level"),
-		}
-	}
+	userAccessLevel := userService.AccessLevelFor(user.Address)
 
 	newPayload := auth.JWTPayload{
 		Address:        user.Address,

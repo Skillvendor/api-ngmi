@@ -3,6 +3,7 @@ package middleware
 import (
 	"api-ngmi/models"
 	"api-ngmi/services/auth"
+	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"context"
 	"errors"
@@ -67,7 +68,7 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 			}
 		}
 
-		if claims.AccessLevel < accessLevel {
+		if userService.AccessLevelFor(claims.Address) < accessLevel {
 			return &types.RequestError{
 				StatusCode: http.StatusUnauthorized,
 				Err:        errors.New("no access to this resource"),

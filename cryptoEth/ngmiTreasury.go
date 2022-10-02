@@ -9,7 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-func TierFor(userAddress string) (int, error) {
+func TreasuryTierFor(userAddress string) (int, error) {
 	client, err := ethclient.Dial(NgmiTreasury.NodeProvider)
 	if err != nil {
 		log.Fatal(err)
@@ -19,7 +19,7 @@ func TierFor(userAddress string) (int, error) {
 
 	instance, err := contracts.NewNgmiTreasury(address, client)
 	if err != nil {
-		log.Fatal("can't establish connection S1", err)
+		log.Fatal("can't establish connection to NGMITreasury", err)
 		return 0, err
 	}
 
