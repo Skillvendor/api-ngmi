@@ -40,6 +40,7 @@ func Run() {
 		}
 	}
 
+	fmt.Println("I am in the following environment", env, allowedOrigins)
 	c := cors.New(cors.Options{
 		AllowedOrigins:   allowedOrigins,
 		AllowCredentials: true,
