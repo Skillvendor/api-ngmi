@@ -63,6 +63,8 @@ func filterReport(r models.Report, role string) models.Report {
 				fReport.DetailedAnalysisLink = v.String()
 			case 17: // Published
 				fReport.Published = v.Bool()
+			case 18: // Average Score
+				fReport.AverageScore = float64(v.Float())
 			}
 		}
 	}
