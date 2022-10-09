@@ -23,14 +23,9 @@ func Run() {
 		"http://localhost:3001",
 		"http://localhost:3000",
 		"http://127.0.0.1:3000",
-		"https://ngmi-admin-dev.netlify.app",
 		"https://ngmi-dev.netlify.app",
-		"https://ngmi-admin-prod.netlify.app",
-		"https://magic-carpet-dev.netlify.app",
-		"https://magic-carpet.netlify.app",
-		"http://local.magic-carpet-admin.com:3001",
-		"https://local.magic-carpet-admin.com:3001",
 		"https://ngmilab.com",
+		"https://ngmi-admin-dev.netlify.app",
 	}
 
 	if env == "prod" {
