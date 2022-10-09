@@ -19,20 +19,29 @@ func Run() {
 
 	InitRoutes(mux)
 
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{
-			"http://localhost:3001",
-			"http://localhost:3000",
-			"http://127.0.0.1:3000",
-			"https://ngmi-admin-dev.netlify.app",
-			"https://ngmi-dev.netlify.app",
-			"https://ngmi-admin-prod.netlify.app",
-			"https://magic-carpet-dev.netlify.app",
-			"https://magic-carpet.netlify.app",
-			"http://local.magic-carpet-admin.com:3001",
-			"https://local.magic-carpet-admin.com:3001",
+	allowedOrigins := []string{
+		"http://localhost:3001",
+		"http://localhost:3000",
+		"http://127.0.0.1:3000",
+		"https://ngmi-admin-dev.netlify.app",
+		"https://ngmi-dev.netlify.app",
+		"https://ngmi-admin-prod.netlify.app",
+		"https://magic-carpet-dev.netlify.app",
+		"https://magic-carpet.netlify.app",
+		"http://local.magic-carpet-admin.com:3001",
+		"https://local.magic-carpet-admin.com:3001",
+		"https://ngmilab.com",
+	}
+
+	if env == "prod" {
+		allowedOrigins = []string{
 			"https://ngmilab.com",
-		},
+			"https://ngmi-admin.netlify.app",
+		}
+	}
+
+	c := cors.New(cors.Options{
+		AllowedOrigins:   allowedOrigins,
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
