@@ -4,6 +4,9 @@ import (
 	"api-ngmi/models"
 	"api-ngmi/redis"
 	"api-ngmi/services/s3"
+	"strconv"
+
+	"github.com/ethereum/go-ethereum/log"
 )
 
 func MapReport(vs []models.Report, f func(models.Report) models.Report) []models.Report {
@@ -44,7 +47,12 @@ func MapToS3Urls(cs []models.Report) []models.Report {
 func AddAvgScore(c models.Report) models.Report {
 	sum := 0.0
 	for _, score := range c.Scores {
-		sum += score.Content
+		score, err := strconv.ParseFloat(score.Content, 64)
+		if err == nil {
+			sum += score
+		} else {
+			log.Error("Can't parsefloat for score")
+		}
 	}
 
 	c.AverageScore = sum / float64(len(c.Scores))

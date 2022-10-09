@@ -34,7 +34,7 @@ type MintDetails struct {
 
 type Score struct {
 	Title   string
-	Content float64
+	Content string
 }
 
 type Report struct {
