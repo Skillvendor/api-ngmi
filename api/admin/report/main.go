@@ -49,7 +49,7 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	err = json.NewEncoder(w).Encode(reportService.TransformToS3Urls(newReport))
+	err = json.NewEncoder(w).Encode(reportService.ProcessReport(newReport))
 
 	if err != nil {
 		return &types.RequestError{

@@ -41,6 +41,27 @@ func MapToS3Urls(cs []models.Report) []models.Report {
 	return cs
 }
 
+func AddAvgScore(c models.Report) models.Report {
+	sum := 0.0
+	for _, score := range c.Scores {
+		sum += score.Content
+	}
+
+	c.AverageScore = sum / float64(len(c.Scores))
+	return c
+}
+
+func ProcessReport(report models.Report) models.Report {
+	TransformToS3Urls(report)
+	AddAvgScore(report)
+
+	return report
+}
+
+func ProcessReports(reports []models.Report) []models.Report {
+	return MapReport(reports, ProcessReport)
+}
+
 func GetPublishedReports() []models.Report {
 	var reports []models.Report
 

@@ -5,7 +5,7 @@ CREATE TABLE users (
   address text NOT NULL UNIQUE,
   nonce text NOT NULL,
   auth_token text,
-  access_level int DEFAULT 1
+  access_level int DEFAULT 0
 );
 
 CREATE UNIQUE INDEX idx_users_address

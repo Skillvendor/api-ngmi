@@ -46,7 +46,7 @@ func filterReport(r models.Report, role string) models.Report {
 			case 8: // AssetsUrls
 				fReport.AssetsUrls = v.Interface().([]string)
 			case 9: // Scores
-				fReport.Scores = v.Interface().([]map[string]interface{})
+				fReport.Scores = v.Interface().([]models.Score)
 			case 10: // Tags
 				fReport.Tags = v.Interface().([]string)
 			case 11: // Chain
@@ -89,7 +89,7 @@ func Index(w http.ResponseWriter, r *http.Request) error {
 	// 	return
 	// }
 
-	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.MapToS3Urls(reports), "gold", filterReport))
+	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.ProcessReports(reports), "gold", filterReport))
 
 	if err != nil {
 		return &types.RequestError{
@@ -123,7 +123,7 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	err = json.NewEncoder(w).Encode(filterReport(reportService.TransformToS3Urls(newReport), "gold"))
+	err = json.NewEncoder(w).Encode(filterReport(reportService.ProcessReport(newReport), "gold"))
 
 	if err != nil {
 		return &types.RequestError{

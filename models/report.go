@@ -32,6 +32,11 @@ type MintDetails struct {
 	CoinTicker   string
 }
 
+type Score struct {
+	Title   string
+	Content float64
+}
+
 type Report struct {
 	Id                   int                      `pg:"id" visibility:"free bronze silver gold" json:"id,omitempty"`
 	CreatedAt            string                   `pg:"created_at" visibility:"free bronze silver gold" json:"created_at,omitempty"`
@@ -42,7 +47,8 @@ type Report struct {
 	LogoUrl              string                   `pg:"-" visibility:"free bronze silver gold" json:"logo_url,omitempty"`
 	Assets               []string                 `pg:"assets,array" visibility:"free bronze silver gold" json:"assets,omitempty"`
 	AssetsUrls           []string                 `pg:"-" visibility:"free bronze silver gold" json:"assets_urls,omitempty"`
-	Scores               []map[string]interface{} `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
+	Scores               []Score                  `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
+	AverageScore         float64                  `pg:"-" visibility:"free bronze silver gold" json:"average_score,omitempty"`
 	Tags                 []string                 `pg:"tags,array" visibility:"free bronze silver gold" json:"tags,omitempty"`
 	Chain                string                   `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
 	Socials              map[string]interface{}   `pg:"socials" visibility:"bronze silver gold" json:"socials,omitempty"`

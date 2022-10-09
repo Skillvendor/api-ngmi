@@ -56,29 +56,27 @@ func Create(w http.ResponseWriter, r *http.Request) error {
 }
 
 func Show(w http.ResponseWriter, r *http.Request) error {
-	newUser := models.User{}
+	// address := r.URL.Query().Get(":address")
 
-	address := r.URL.Query().Get(":address")
+	var user models.User = r.Context().Value("user").(models.User)
 
-	newUser.Address = address
-
-	if newUser.Address == "" {
+	if user.Address == "" {
 		return &types.RequestError{
 			StatusCode: http.StatusBadRequest,
 			Err:        errors.New("no address given"),
 		}
 	}
 
-	newUser.Find()
+	user.Find()
 
-	if newUser.Id == 0 {
+	if user.Id == 0 {
 		return &types.RequestError{
 			StatusCode: http.StatusBadRequest,
 			Err:        errors.New("no user found"),
 		}
 	}
 
-	err := json.NewEncoder(w).Encode(newUser)
+	err := json.NewEncoder(w).Encode(user)
 
 	if err != nil {
 		return &types.RequestError{

@@ -10,7 +10,7 @@ type User struct {
 	Address     string `pg:"address" json:"address,omitempty"`
 	Nonce       string `pg:"nonce" json:"nonce,omitempty"`
 	AuthToken   string `pg:"auth_token" json:"-"`
-	AccessLevel int    `pg:"access_level" json:"-"`
+	AccessLevel int    `pg:"access_level" json:"access_level"`
 }
 
 func (user *User) Save() bool {
