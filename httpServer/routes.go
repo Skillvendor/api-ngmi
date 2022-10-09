@@ -42,13 +42,13 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	// admin
 
 	// report
-	mux.Put("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Update)))
-	mux.Del("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Delete)))
-	mux.Post("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Create)))
-	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Publish)))
-	mux.Patch("/api/reports/reject/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Unpublish)))
-	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Index)))
-	mux.Get("/api/reports/admin/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminReportCtrl.Show)))
+	mux.Put("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Update, 6))))
+	mux.Del("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Delete, 7))))
+	mux.Post("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Create, 6))))
+	mux.Patch("/api/reports/publish/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Publish, 7))))
+	mux.Patch("/api/reports/reject/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Unpublish, 7))))
+	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Index, 6))))
+	mux.Get("/api/reports/admin/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Show, 6))))
 
 	// auth
 	mux.Post("/api/auth/admin/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminAuthCtrl.Authentication)))
