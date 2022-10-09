@@ -52,8 +52,8 @@ func AddAvgScore(c models.Report) models.Report {
 }
 
 func ProcessReport(report models.Report) models.Report {
-	TransformToS3Urls(report)
-	AddAvgScore(report)
+	report = TransformToS3Urls(report)
+	report = AddAvgScore(report)
 
 	return report
 }

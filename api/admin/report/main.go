@@ -15,7 +15,7 @@ import (
 func Index(w http.ResponseWriter, r *http.Request) error {
 	reports := models.GetAllReports()
 
-	err := json.NewEncoder(w).Encode(reportService.MapToS3Urls(reports))
+	err := json.NewEncoder(w).Encode(reportService.ProcessReports(reports))
 
 	if err != nil {
 		return &types.RequestError{
