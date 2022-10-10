@@ -31,9 +31,10 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	// private
 
 	// s3
-	mux.Get("/api/upload/asset", http.HandlerFunc(middleware.ApplyStandardMiddlewares(commonS3Ctrl.GetSignedUploadUrlAssets)))
-	mux.Get("/api/upload/report", http.HandlerFunc(middleware.ApplyStandardMiddlewares(commonS3Ctrl.GetSignedUploadUrlReports)))
-	mux.Get("/api/upload/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(commonS3Ctrl.GetSignedDownloadUrlReports)))
+	mux.Get("/api/upload/asset", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(commonS3Ctrl.GetSignedUploadUrlAssets, 6))))
+	mux.Get("/api/upload/report", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(commonS3Ctrl.GetSignedUploadUrlReports, 6))))
+	mux.Get("/api/upload/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(commonS3Ctrl.GetSignedDownloadUrlReports, 6))))
+	mux.Get("/api/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(commonS3Ctrl.GetSignedDownloadUrlReports, 3))))
 
 	// user
 
