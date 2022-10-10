@@ -35,8 +35,6 @@ func Run() {
 		}
 	}
 
-	fmt.Println("THIS IS THE ALLOWED ORIGINS config", allowedOrigins, env)
-
 	c := cors.New(cors.Options{
 		AllowedOrigins:   allowedOrigins,
 		AllowCredentials: true,
