@@ -32,6 +32,7 @@ func Run() {
 		allowedOrigins = []string{
 			"https://ngmilab.com",
 			"https://ngmi-admin.netlify.app",
+			"https://stalwart-narwhal-8af26d.netlify.app",
 		}
 	}
 
