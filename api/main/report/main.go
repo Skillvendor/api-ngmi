@@ -47,24 +47,24 @@ func filterReport(r models.Report, role string) models.Report {
 				fReport.AssetsUrls = v.Interface().([]string)
 			case 9: // Scores
 				fReport.Scores = v.Interface().([]models.Score)
-			case 10: // Tags
-				fReport.Tags = v.Interface().([]string)
-			case 11: // Chain
-				fReport.Chain = v.String()
-			case 12: // Socials
-				fReport.Socials = v.Interface().([]map[string]interface{})
-			case 13: // ReportDetails
-				fReport.ReportDetails = v.Interface().(map[string]interface{})
-			case 14: // DetailedAnalysis
-				fReport.DetailedAnalysis = v.Interface().([]map[string]interface{})
-			case 15: // ReportDetailsLink
-				fReport.ReportDetailsLink = v.String()
-			case 16: // DetailedAnalysisLink
-				fReport.DetailedAnalysisLink = v.String()
-			case 17: // Published
-				fReport.Published = v.Bool()
-			case 18: // Average Score
+			case 10: // Average Score
 				fReport.AverageScore = float64(v.Float())
+			case 11: // Tags
+				fReport.Tags = v.Interface().([]string)
+			case 12: // Chain
+				fReport.Chain = v.String()
+			case 13: // Socials
+				fReport.Socials = v.Interface().([]map[string]interface{})
+			case 14: // ReportDetails
+				fReport.ReportDetails = v.Interface().(map[string]interface{})
+			case 15: // DetailedAnalysis
+				fReport.DetailedAnalysis = v.Interface().([]map[string]interface{})
+			case 16: // ReportDetailsLink
+				fReport.ReportDetailsLink = v.String()
+			case 17: // DetailedAnalysisLink
+				fReport.DetailedAnalysisLink = v.String()
+			case 18: // Published
+				fReport.Published = v.Bool()
 			}
 		}
 	}
