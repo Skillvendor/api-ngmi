@@ -9,6 +9,7 @@ import (
 
 var NTS1 EthContract
 var NTS2 EthContract
+var BSC Chain
 var NgmiTreasury EthContract
 
 var NTS1Addr = "0xb668beB1Fa440F6cF2Da0399f8C28caB993Bdd65"
@@ -23,6 +24,10 @@ var LucianAddress2 = "0x090E2883B09Efa50F553DF70b6bf716F1AE74e7B"
 type EthContract struct {
 	NodeProvider string
 	HexAddress   string
+}
+
+type Chain struct {
+	NodeProvider string
 }
 
 func init() {
@@ -47,5 +52,9 @@ func init() {
 	NgmiTreasury = EthContract{
 		NodeProvider: QuickNode,
 		HexAddress:   NgmiTreasuryAddr,
+	}
+
+	BSC = Chain{
+		NodeProvider: QuickNode,
 	}
 }

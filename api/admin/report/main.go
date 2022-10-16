@@ -6,7 +6,6 @@ import (
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 
 	"net/http"
@@ -67,7 +66,6 @@ func Create(w http.ResponseWriter, r *http.Request) error {
 	err := json.NewDecoder(r.Body).Decode(&newReport)
 
 	if err != nil {
-		fmt.Println(err)
 		return &types.RequestError{
 			StatusCode: http.StatusInternalServerError,
 			Err:        errors.New("can't decode report"),
