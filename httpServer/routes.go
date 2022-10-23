@@ -21,12 +21,16 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainReportCtrl.Index)))
 
 	// user
-	mux.Get("/api/user/:address", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainUserCtrl.Show)))
 	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainUserCtrl.Create)))
 
 	// auth
 	mux.Post("/api/auth/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainAuthCtrl.Authentication)))
 	mux.Get("/api/auth/test", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(mainAuthCtrl.TestJWT, 1))))
+
+	// admin
+
+	// auth
+	mux.Post("/api/auth/admin/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminAuthCtrl.Authentication)))
 
 	// private
 
@@ -37,7 +41,7 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/report/read/:key", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(commonS3Ctrl.GetSignedDownloadUrlReports, 3))))
 
 	// user
-
+	mux.Get("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainUserCtrl.Show, 0))))
 	mux.Post("api/user/refreshAccessLevelCache", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainUserCtrl.ResetAccessLevelCache, 0))))
 
 	// admin
@@ -50,9 +54,6 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Patch("/api/reports/reject/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Unpublish, 7))))
 	mux.Get("/api/reports/admin/all", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Index, 6))))
 	mux.Get("/api/reports/admin/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(adminReportCtrl.Show, 6))))
-
-	// auth
-	mux.Post("/api/auth/admin/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(adminAuthCtrl.Authentication)))
 
 	http.Handle("/", mux)
 }
