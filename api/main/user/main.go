@@ -3,6 +3,7 @@ package user
 import (
 	"api-ngmi/models"
 	"api-ngmi/redis"
+	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
@@ -12,6 +13,11 @@ import (
 
 	"net/http"
 )
+
+type UserData struct {
+	User        models.User
+	AccessLevel int
+}
 
 func Create(w http.ResponseWriter, r *http.Request) error {
 	newUser := models.User{}
@@ -43,7 +49,7 @@ func Create(w http.ResponseWriter, r *http.Request) error {
 		newUser.Save()
 	}
 
-	err = json.NewEncoder(w).Encode(newUser)
+	err = json.NewEncoder(w).Encode(UserData{User: newUser, AccessLevel: 0})
 
 	if err != nil {
 		return &types.RequestError{
@@ -76,7 +82,7 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	err := json.NewEncoder(w).Encode(user)
+	err := json.NewEncoder(w).Encode(UserData{User: user, AccessLevel: userService.AccessLevelFor(user.Address)})
 
 	if err != nil {
 		return &types.RequestError{
