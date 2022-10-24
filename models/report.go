@@ -33,8 +33,8 @@ type MintDetails struct {
 }
 
 type Score struct {
-	Title   string
-	Content string
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 type Report struct {
