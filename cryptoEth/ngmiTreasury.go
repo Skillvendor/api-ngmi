@@ -25,6 +25,17 @@ func TreasuryTierFor(userAddress string) (int, error) {
 
 	hexUserAddress := common.HexToAddress(userAddress)
 
+	subscribed, err := instance.IsUserSubscribed(&bind.CallOpts{}, hexUserAddress)
+
+	if err != nil {
+		log.Fatal("subscription can't be retrieved", err)
+		return 0, err
+	}
+
+	if !subscribed {
+		return 0, nil
+	}
+
 	tier, err := instance.GetUserTier(&bind.CallOpts{}, hexUserAddress)
 	if err != nil {
 		log.Fatal("balance can't be retrieved", err)

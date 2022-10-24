@@ -3,6 +3,7 @@ package user
 import (
 	"api-ngmi/models"
 	"api-ngmi/redis"
+	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
@@ -38,9 +39,11 @@ func Create(w http.ResponseWriter, r *http.Request) error {
 		// user doesn't exist so we try creating
 		rand.Seed(time.Now().UnixNano())
 		newUser.Nonce = strconv.Itoa(rand.Int())
-		newUser.AccessLevel = 1
+		newUser.AccessLevel = 0
 		newUser.AuthToken = ""
 		newUser.Save()
+	} else {
+		newUser.AccessLevel = userService.AccessLevelFor(newUser.Address)
 	}
 
 	err = json.NewEncoder(w).Encode(newUser)
@@ -75,6 +78,8 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 			Err:        errors.New("no user found"),
 		}
 	}
+
+	user.AccessLevel = userService.AccessLevelFor(user.Address)
 
 	err := json.NewEncoder(w).Encode(user)
 
