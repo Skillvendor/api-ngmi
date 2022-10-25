@@ -42,7 +42,7 @@ func InitRoutes(mux *pat.PatternServeMux) {
 
 	// user
 	mux.Get("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainUserCtrl.Show, 0))))
-	mux.Post("api/user/refreshAccessLevelCache", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainUserCtrl.ResetAccessLevelCache, 0))))
+	mux.Post("/api/user/refreshAccessLevelCache", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainUserCtrl.ResetAccessLevelCache, 0))))
 
 	// admin
 
