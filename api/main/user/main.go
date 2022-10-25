@@ -105,8 +105,17 @@ func ResetAccessLevelCache(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
+	// empty
+	newUser := models.User{}
+	err = json.NewEncoder(w).Encode(newUser)
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("ok"))
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("error encoding user"),
+		}
+	}
 
 	return nil
 }
