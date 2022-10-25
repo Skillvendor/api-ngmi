@@ -37,10 +37,12 @@ func TierFor(address string) int {
 func AccessLevelFor(address string) int {
 	tier, err := redis.AccessLevelFor(address)
 
-	if err != nil {
-		fmt.Println("there was an error getting the access level", err)
+	if err == nil {
+		fmt.Println("got the access level", tier)
 		return tier
 	}
+
+	fmt.Println("I AM NOT USING THE CACHE")
 
 	tier = TierFor(address)
 	redis.CacheAccessLevelFor(address, tier)
