@@ -5,6 +5,7 @@ import (
 	"api-ngmi/cryptoEth"
 	"api-ngmi/lib/utils"
 	"api-ngmi/redis"
+	"fmt"
 )
 
 func TierFor(address string) int {
@@ -12,9 +13,11 @@ func TierFor(address string) int {
 	if isS1 {
 		return constants.Gold
 	}
+	fmt.Println("it is not S1")
 
 	tier, _ := cryptoEth.TreasuryTierFor(address)
 	if tier > 0 {
+		fmt.Println("it is greater than 0")
 		return tier
 	}
 
@@ -23,6 +26,7 @@ func TierFor(address string) int {
 		return utils.Max(constants.Silver, tier)
 	}
 
+	fmt.Println("it is not S2")
 	if tier > 0 {
 		return tier
 	}
@@ -32,7 +36,9 @@ func TierFor(address string) int {
 
 func AccessLevelFor(address string) int {
 	tier, err := redis.AccessLevelFor(address)
+
 	if err != nil {
+		fmt.Println("there was an error getting the access level", err)
 		return tier
 	}
 

@@ -2,6 +2,7 @@ package cryptoEth
 
 import (
 	contracts "api-ngmi/contracts"
+	"fmt"
 	"log"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -28,19 +29,21 @@ func TreasuryTierFor(userAddress string) (int, error) {
 	subscribed, err := instance.IsUserSubscribed(&bind.CallOpts{}, hexUserAddress)
 
 	if err != nil {
-		log.Fatal("subscription can't be retrieved", err)
+		fmt.Println("subscription can't be retrieved", err)
 		return 0, err
 	}
 
 	if !subscribed {
+		fmt.Println("it is not SUBSCRIBED")
 		return 0, nil
 	}
 
 	tier, err := instance.GetUserTier(&bind.CallOpts{}, hexUserAddress)
 	if err != nil {
-		log.Fatal("balance can't be retrieved", err)
+		fmt.Println("balance can't be retrieved", err)
 		return 0, err
 	}
 
+	fmt.Println("got the tier", tier.Int64())
 	return int(tier.Int64()), nil
 }
