@@ -11,7 +11,9 @@ CREATE TABLE ntpayments (
   transaction_valid BOOLEAN,
 
   discord_handle text NOT NULL UNIQUE,
-  twitter_handle text NOT NULL UNIQUE
+  twitter_handle text NOT NULL UNIQUE,
+
+  valid BOOLEAN
 );
 
 CREATE UNIQUE INDEX idx_ntpayments_citizen_wallets
@@ -22,6 +24,9 @@ ON ntpayments(access_wallet);
 
 CREATE INDEX idx_ntpayments_transaction_verified
 ON ntpayments(transaction_verified);
+
+CREATE INDEX idx_ntpayments_valid
+ON ntpayments(valid);
 
 create extension if not exists moddatetime schema extensions;
 
