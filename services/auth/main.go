@@ -19,9 +19,10 @@ type JWTPayload struct {
 // Create a struct that will be encoded to a JWT.
 // We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
 type Claims struct {
-	Address     string `json:"address"`
-	Username    string `json:"username"`
-	AccessLevel int    `json:"accessLevel"`
+	Address     string    `json:"address"`
+	Username    string    `json:"username"`
+	AccessLevel int       `json:"accessLevel"`
+	TokenId     time.Time `json:"ommit"`
 	jwt.StandardClaims
 }
 
@@ -39,6 +40,7 @@ func CreateJWT(payload JWTPayload) (string, error) {
 		Address:     payload.Address,
 		Username:    payload.Username,
 		AccessLevel: payload.AccessLevel,
+		TokenId:     time.Now(),
 		StandardClaims: jwt.StandardClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: expirationTime.Unix(),
