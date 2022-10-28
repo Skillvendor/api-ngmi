@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -48,6 +49,7 @@ func verifySig(from, sigHex string, msg []byte) bool {
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("I AM AUTHENTICATING")
 	newSignature := SignatureData{}
 
 	err := json.NewDecoder(r.Body).Decode(&newSignature)
@@ -95,6 +97,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	authToken, jwtError := auth.CreateJWT(newPayload)
+
+	fmt.Println("I CREATED A NEW AUTH TOKEN", authToken)
 
 	if jwtError != nil {
 		return &types.RequestError{
