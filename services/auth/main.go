@@ -25,7 +25,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-var AuthTokenExpirationTime = time.Now().Add(24 * time.Hour)
+var AuthTokenExpirationTime = time.Now().Add(1 * time.Minute)
 
 func CreateJWT(payload JWTPayload) (string, error) {
 	jwtKey := os.Getenv("JWT_SECRET")
