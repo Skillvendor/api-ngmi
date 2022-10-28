@@ -46,6 +46,7 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 				}
 			}
 
+			fmt.Println("THIS IS THE SILLY ERROR", err)
 			return &types.RequestError{
 				StatusCode: http.StatusBadRequest,
 				Err:        errors.New("did you provide a token?"),
