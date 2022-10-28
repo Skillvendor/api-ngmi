@@ -36,6 +36,13 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 	return func(w http.ResponseWriter, r *http.Request) error {
 		authHeader := r.Header.Get("Authorization")
 
+		if authHeader == "" {
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("no token provided"),
+			}
+		}
+
 		claims, tkn, err := auth.DecodeJWT(authHeader)
 
 		if !tkn.Valid {
@@ -57,13 +64,13 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 
 				return &types.RequestError{
 					StatusCode: http.StatusBadRequest,
-					Err:        errors.New("did you provide a token?"),
+					Err:        errors.New("not a valid token"),
 				}
 			}
 
 			return &types.RequestError{
 				StatusCode: http.StatusBadRequest,
-				Err:        errors.New("not a valid token, did you even provide one?"),
+				Err:        errors.New("not a valid token"),
 			}
 		}
 
