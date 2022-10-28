@@ -38,24 +38,41 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 
 		claims, tkn, err := auth.DecodeJWT(authHeader)
 
+		if !tkn.Valid {
+			if ve, ok := err.(*jwt.ValidationError); ok {
+				if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+					return &types.RequestError{
+						StatusCode: http.StatusUnauthorized,
+						Err:        errors.New("token malformed"),
+					}
+				}
+
+				if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+					// Token is either expired or not active yet
+					return &types.RequestError{
+						StatusCode: http.StatusUnauthorized,
+						Err:        errors.New("token Expired"),
+					}
+				}
+
+				return &types.RequestError{
+					StatusCode: http.StatusBadRequest,
+					Err:        errors.New("did you provide a token?"),
+				}
+			}
+
+			return &types.RequestError{
+				StatusCode: http.StatusBadRequest,
+				Err:        errors.New("not a valid token, did you even provide one?"),
+			}
+		}
+
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
 				return &types.RequestError{
 					StatusCode: http.StatusUnauthorized,
 					Err:        errors.New("unauthorized"),
 				}
-			}
-
-			fmt.Println("THIS IS THE SILLY ERROR", err)
-			return &types.RequestError{
-				StatusCode: http.StatusBadRequest,
-				Err:        errors.New("did you provide a token?"),
-			}
-		}
-		if !tkn.Valid {
-			return &types.RequestError{
-				StatusCode: http.StatusUnauthorized,
-				Err:        errors.New("unauthorized"),
 			}
 		}
 

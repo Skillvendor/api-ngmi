@@ -93,7 +93,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	newPayload := auth.JWTPayload{
 		Address:        user.Address,
 		AccessLevel:    userAccessLevel,
-		ExpirationTime: auth.AuthTokenExpirationTime,
+		ExpirationTime: auth.AuthTokenExpirationTime(),
 	}
 
 	authToken, jwtError := auth.CreateJWT(newPayload)
@@ -126,7 +126,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Authorization",
 		Value:   authToken,
-		Expires: auth.AuthTokenExpirationTime,
+		Expires: auth.AuthTokenExpirationTime(),
 	})
 
 	return nil
