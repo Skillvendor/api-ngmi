@@ -1,0 +1,25 @@
+package models
+
+import (
+	"api-ngmi/dbConn"
+)
+
+type NtPayment struct {
+	Id              int    `pg:"id" json:"-"`
+	CitizenWallet   string `pg:"citizen_wallet" json:"citizen_wallet"`
+	AccessWallet    string `pg:"access_wallet" json:"access_wallet"`
+	TransactionLink string `pg:"transaction_link" json:"transaction_link"`
+
+	DiscordHandle string `pg:"discord_handle" json:"discord_handle"`
+	TwitterHandle string `pg:"twitter_handle" json:"twitter_handle"`
+
+	TransactionVerified bool `pg:"transaction_verified" json:"transaction_verified"`
+	TransactionValid    bool `pg:"transaction_valid" json:"transaction_valid"`
+	Valid               bool `pg:"valid" json:"valid"`
+}
+
+func (payment *NtPayment) Find() bool {
+	err := dbConn.DB.Model(payment).Where("access_wallet = ?", payment.AccessWallet).First()
+
+	return err == nil
+}
