@@ -38,6 +38,8 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 
 		if authHeader == "" {
 			if accessLevel == -1 {
+				ctx := context.WithValue(r.Context(), "user", models.User{AccessLevel: 0})
+				handler(w, r.WithContext(ctx))
 				return nil
 			}
 
