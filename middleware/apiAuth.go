@@ -37,6 +37,10 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 		authHeader := r.Header.Get("Authorization")
 
 		if authHeader == "" {
+			if accessLevel == -1 {
+				return nil
+			}
+
 			return &types.RequestError{
 				StatusCode: http.StatusUnauthorized,
 				Err:        errors.New("no token provided"),
