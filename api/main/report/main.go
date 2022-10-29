@@ -4,6 +4,7 @@ import (
 	"api-ngmi/constants"
 	"api-ngmi/models"
 	reportService "api-ngmi/services/report"
+	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
@@ -86,7 +87,7 @@ func Index(w http.ResponseWriter, r *http.Request) error {
 
 	var user models.User = r.Context().Value("user").(models.User)
 
-	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.ProcessReports(reports), constants.LevelToTier[user.AccessLevel], filterReport))
+	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.ProcessReports(reports), constants.LevelToTier[userService.AccessLevelFor(user.Address)], filterReport))
 
 	if err != nil {
 		return &types.RequestError{
