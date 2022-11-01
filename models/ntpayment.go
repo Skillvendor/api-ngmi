@@ -25,3 +25,14 @@ func (payment *NtPayment) Find() bool {
 	fmt.Println("This is the find error", err)
 	return err == nil
 }
+
+func GetAllPayments() []NtPayment {
+	got := []NtPayment{}
+
+	err := dbConn.DB.Model(&got).Select()
+	if err != nil {
+		fmt.Println("Can't retrieve Payments", err)
+	}
+
+	return got
+}

@@ -12,9 +12,13 @@ func TierFor(address string) int {
 
 	found := ntPayment.Find()
 
+	allPayments := models.GetAllPayments()
+
 	fmt.Println("Is the ntPaymentFound?", found, address)
 
 	fmt.Println("ntPayment", ntPayment)
+
+	fmt.Println("These are all the payments", allPayments)
 
 	if found {
 		isS1, _ := cryptoEth.HasNTS1(address)
