@@ -2,6 +2,7 @@ package models
 
 import (
 	"api-ngmi/dbConn"
+	"fmt"
 	"log"
 )
 
@@ -97,6 +98,8 @@ func (report *Report) Reject() bool {
 
 func (report *Report) FindAdmin() bool {
 	err := dbConn.DB.Model(report).WherePK().First()
+
+	fmt.Println("Let's see the error", err)
 
 	return err == nil
 }
