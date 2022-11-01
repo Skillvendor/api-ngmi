@@ -28,7 +28,7 @@ func QueryToString(q *orm.Query) string {
 }
 
 func (payment *NtPayment) Find() bool {
-	query := dbConn.DB.Model(payment).Where("access_wallet = ?", payment.AccessWallet)
+	query := dbConn.DB.Model(payment).Where("lower(access_wallet) = ?", payment.AccessWallet)
 	fmt.Println("This is the query as string", QueryToString(query))
 
 	err := query.First()
