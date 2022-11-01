@@ -6,6 +6,7 @@ import (
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"net/http"
@@ -27,12 +28,14 @@ func Index(w http.ResponseWriter, r *http.Request) error {
 }
 
 func Show(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("Admin Show")
 	newReport := models.Report{}
 
 	id, err := strconv.Atoi(r.URL.Query().Get(":id"))
 	newReport.Id = id
 
 	if err != nil {
+		fmt.Println("err while getting id", err)
 		return &types.RequestError{
 			StatusCode: http.StatusInternalServerError,
 			Err:        errors.New("error getting it"),
@@ -42,15 +45,19 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 	found := newReport.FindAdmin()
 
 	if !found {
+		fmt.Println("Report was not found")
 		return &types.RequestError{
 			StatusCode: http.StatusBadRequest,
 			Err:        errors.New("can't find report"),
 		}
 	}
 
+	fmt.Println("Got the report", newReport)
+
 	err = json.NewEncoder(w).Encode(reportService.ProcessReport(newReport))
 
 	if err != nil {
+		fmt.Println("Error encoding", err)
 		return &types.RequestError{
 			StatusCode: http.StatusInternalServerError,
 			Err:        errors.New("error Encoding S3 url transformations"),
