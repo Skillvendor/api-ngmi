@@ -20,9 +20,9 @@ type NtPayment struct {
 }
 
 func (payment *NtPayment) Find() bool {
-	err := dbConn.DB.Model(payment).Where("access_wallet = ?", payment.AccessWallet).First()
+	err := dbConn.DB.Model(payment).Where("access_wallet LIKE ?", payment.AccessWallet).First()
 
-	fmt.Println("This is the find error", err)
+	fmt.Println("This is the find error", err, payment.AccessWallet)
 	return err == nil
 }
 
