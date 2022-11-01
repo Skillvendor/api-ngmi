@@ -3,6 +3,8 @@ package models
 import (
 	"api-ngmi/dbConn"
 	"fmt"
+
+	"github.com/go-pg/pg/v10/orm"
 )
 
 type NtPayment struct {
@@ -19,10 +21,20 @@ type NtPayment struct {
 	Valid               bool `pg:"valid" json:"valid"`
 }
 
+func QueryToString(q *orm.Query) string {
+	value, _ := q.AppendQuery(orm.NewFormatter(), nil)
+
+	return string(value)
+}
+
 func (payment *NtPayment) Find() bool {
-	err := dbConn.DB.Model(payment).Where("access_wallet = ?", payment.AccessWallet).First()
+	query := dbConn.DB.Model(payment).Where("access_wallet = ?", payment.AccessWallet)
+	fmt.Println("This is the query as string", QueryToString(query))
+
+	err := query.First()
 
 	fmt.Println("This is the find error", err, payment.AccessWallet)
+
 	return err == nil
 }
 
