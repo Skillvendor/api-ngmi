@@ -4,6 +4,7 @@ import (
 	"api-ngmi/constants"
 	"api-ngmi/cryptoEth"
 	"api-ngmi/models"
+	"api-ngmi/redis"
 	"fmt"
 )
 
@@ -11,14 +12,6 @@ func TierFor(address string) int {
 	ntPayment := models.NtPayment{AccessWallet: address}
 
 	found := ntPayment.Find()
-
-	allPayments := models.GetAllPayments()
-
-	fmt.Println("Is the ntPaymentFound?", found, address)
-
-	fmt.Println("ntPayment", ntPayment)
-
-	fmt.Println("These are all the payments", allPayments)
 
 	if found {
 		isS1, _ := cryptoEth.HasNTS1(address)
@@ -47,17 +40,15 @@ func TierFor(address string) int {
 }
 
 func AccessLevelFor(address string) int {
-	// tier, err := redis.AccessLevelFor(address)
+	tier, err := redis.AccessLevelFor(address)
 
-	// if err == nil {
-	// 	fmt.Println("got the access level", tier)
-	// 	return tier
-	// }
+	if err == nil {
+		fmt.Println("got the access level", tier)
+		return tier
+	}
 
-	// fmt.Println("I AM NOT USING THE CACHE")
-
-	tier := TierFor(address)
-	// redis.CacheAccessLevelFor(address, tier)
+	tier = TierFor(address)
+	redis.CacheAccessLevelFor(address, tier)
 
 	return tier
 }
