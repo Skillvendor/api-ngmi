@@ -3,6 +3,7 @@ package models
 import (
 	"api-ngmi/dbConn"
 	"fmt"
+	"strings"
 
 	"github.com/go-pg/pg/v10/orm"
 )
@@ -28,7 +29,7 @@ func QueryToString(q *orm.Query) string {
 }
 
 func (payment *NtPayment) Find() bool {
-	err := dbConn.DB.Model(payment).Where("lower(access_wallet) = ?", payment.AccessWallet).First()
+	err := dbConn.DB.Model(payment).Where("lower(access_wallet) = ?", strings.ToLower(payment.AccessWallet)).First()
 
 	return err == nil
 }
