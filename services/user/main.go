@@ -12,7 +12,7 @@ func TierFor(address string) int {
 
 	found := ntPayment.Find()
 
-	fmt.Println("Is the ntPaymentFound?", found)
+	fmt.Println("Is the ntPaymentFound?", found, address)
 
 	fmt.Println("ntPayment", ntPayment)
 

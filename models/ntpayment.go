@@ -2,6 +2,7 @@ package models
 
 import (
 	"api-ngmi/dbConn"
+	"fmt"
 )
 
 type NtPayment struct {
@@ -21,5 +22,6 @@ type NtPayment struct {
 func (payment *NtPayment) Find() bool {
 	err := dbConn.DB.Model(payment).Where("access_wallet = ?", payment.AccessWallet).First()
 
+	fmt.Println("This is the find error", err)
 	return err == nil
 }
