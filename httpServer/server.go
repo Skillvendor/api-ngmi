@@ -27,6 +27,7 @@ func Run() {
 		"https://ngmi-dev.netlify.app",
 		"https://ngmilab.com",
 		"https://ngmi-admin-dev.netlify.app",
+		"https://skillvendor-magiccarpet-fgfcbk4udpe.ws-eu74.gitpod.io/",
 	}
 
 	if env == "prod" {
