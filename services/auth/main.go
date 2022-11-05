@@ -27,7 +27,7 @@ type Claims struct {
 }
 
 func AuthTokenExpirationTime() time.Time {
-	return time.Now().Add(1 * time.Minute)
+	return time.Now().Add(24 * time.Hour)
 }
 
 func CreateJWT(payload JWTPayload) (string, error) {
