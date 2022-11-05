@@ -17,7 +17,12 @@ func LimitRequestLength(handler func(w http.ResponseWriter, r *http.Request) err
 func ErrorHandler(handler func(w http.ResponseWriter, r *http.Request) error) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := handler(w, r); err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			re, ok := err.(*types.RequestError)
+			if ok {
+				w.WriteHeader(re.StatusCode)
+			} else {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
 			json.NewEncoder(w).Encode(&types.StandardError{Message: err.Error()})
 		}
 	}
