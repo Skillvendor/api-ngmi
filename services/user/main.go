@@ -4,7 +4,6 @@ import (
 	"api-ngmi/constants"
 	"api-ngmi/cryptoEth"
 	"api-ngmi/models"
-	"api-ngmi/redis"
 	"fmt"
 )
 
@@ -40,15 +39,15 @@ func TierFor(address string) int {
 }
 
 func AccessLevelFor(address string) int {
-	tier, err := redis.AccessLevelFor(address)
+	// tier, err := redis.AccessLevelFor(address)
 
-	if err == nil {
-		fmt.Println("got the access level", tier)
-		return tier
-	}
+	// if err == nil {
+	// 	fmt.Println("got the access level", tier)
+	// 	return tier
+	// }
 
-	tier = TierFor(address)
-	redis.CacheAccessLevelFor(address, tier)
+	tier := TierFor(address)
+	// redis.CacheAccessLevelFor(address, tier)
 
 	return tier
 }
