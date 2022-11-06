@@ -13,6 +13,8 @@ type AccessLevelCache struct {
 	AccessLevel int
 }
 
+var AccessLevelCacheExpiry time.Duration = time.Duration(6) * time.Hour // 6 hours
+
 func CacheAccessLevelFor(address string, accessLevel int) (bool, error) {
 	ctx := context.TODO()
 	key := fmt.Sprintf("accessLevel-%s", address)
@@ -25,9 +27,9 @@ func CacheAccessLevelFor(address string, accessLevel int) (bool, error) {
 		Ctx:   ctx,
 		Key:   key,
 		Value: obj,
-		TTL:   time.Hour,
+		TTL:   AccessLevelCacheExpiry,
 	}); err != nil {
-		fmt.Println("THere was an error")
+		fmt.Println("Error getting access level for", address, err)
 		return false, err
 	}
 

@@ -6,3 +6,10 @@ const (
 	Silver int = 2
 	Gold   int = 3
 )
+
+var LevelToTier = map[int]string{
+	0: "free",
+	1: "bronze",
+	2: "silver",
+	3: "gold",
+}

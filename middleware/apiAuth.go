@@ -36,7 +36,49 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 	return func(w http.ResponseWriter, r *http.Request) error {
 		authHeader := r.Header.Get("Authorization")
 
+		if authHeader == "" {
+			if accessLevel == -1 {
+				ctx := context.WithValue(r.Context(), "user", models.User{AccessLevel: 0})
+				handler(w, r.WithContext(ctx))
+				return nil
+			}
+
+			return &types.RequestError{
+				StatusCode: http.StatusUnauthorized,
+				Err:        errors.New("no token provided"),
+			}
+		}
+
 		claims, tkn, err := auth.DecodeJWT(authHeader)
+
+		if !tkn.Valid {
+			if ve, ok := err.(*jwt.ValidationError); ok {
+				if ve.Errors&jwt.ValidationErrorMalformed != 0 {
+					return &types.RequestError{
+						StatusCode: http.StatusUnauthorized,
+						Err:        errors.New("token malformed"),
+					}
+				}
+
+				if ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) != 0 {
+					// Token is either expired or not active yet
+					return &types.RequestError{
+						StatusCode: http.StatusUnauthorized,
+						Err:        errors.New("token Expired"),
+					}
+				}
+
+				return &types.RequestError{
+					StatusCode: http.StatusBadRequest,
+					Err:        errors.New("not a valid token"),
+				}
+			}
+
+			return &types.RequestError{
+				StatusCode: http.StatusBadRequest,
+				Err:        errors.New("not a valid token"),
+			}
+		}
 
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
@@ -44,17 +86,6 @@ func CheckJWTToken(handler func(w http.ResponseWriter, r *http.Request) error, a
 					StatusCode: http.StatusUnauthorized,
 					Err:        errors.New("unauthorized"),
 				}
-			}
-
-			return &types.RequestError{
-				StatusCode: http.StatusBadRequest,
-				Err:        errors.New("did you provide a token?"),
-			}
-		}
-		if !tkn.Valid {
-			return &types.RequestError{
-				StatusCode: http.StatusUnauthorized,
-				Err:        errors.New("unauthorized"),
 			}
 		}
 

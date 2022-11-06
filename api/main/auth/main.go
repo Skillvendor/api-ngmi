@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -48,6 +49,7 @@ func verifySig(from, sigHex string, msg []byte) bool {
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("I AM AUTHENTICATING")
 	newSignature := SignatureData{}
 
 	err := json.NewDecoder(r.Body).Decode(&newSignature)
@@ -91,10 +93,12 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	newPayload := auth.JWTPayload{
 		Address:        user.Address,
 		AccessLevel:    userAccessLevel,
-		ExpirationTime: auth.AuthTokenExpirationTime,
+		ExpirationTime: auth.AuthTokenExpirationTime(),
 	}
 
 	authToken, jwtError := auth.CreateJWT(newPayload)
+
+	fmt.Println("I CREATED A NEW AUTH TOKEN", authToken)
 
 	if jwtError != nil {
 		return &types.RequestError{
@@ -122,7 +126,7 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "Authorization",
 		Value:   authToken,
-		Expires: auth.AuthTokenExpirationTime,
+		Expires: auth.AuthTokenExpirationTime(),
 	})
 
 	return nil

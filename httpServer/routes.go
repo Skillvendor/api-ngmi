@@ -17,8 +17,8 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	// public
 
 	// report
-	mux.Get("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainReportCtrl.Show)))
-	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainReportCtrl.Index)))
+	mux.Get("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainReportCtrl.Show, -1))))
+	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainReportCtrl.Index, -1))))
 
 	// user
 	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainUserCtrl.Create)))

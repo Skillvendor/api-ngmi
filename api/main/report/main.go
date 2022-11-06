@@ -1,8 +1,10 @@
 package report
 
 import (
+	"api-ngmi/constants"
 	"api-ngmi/models"
 	reportService "api-ngmi/services/report"
+	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
@@ -83,15 +85,9 @@ func MapFilterReport(vs []models.Report, role string, f func(models.Report, stri
 func Index(w http.ResponseWriter, r *http.Request) error {
 	reports := reportService.GetPublishedReports()
 
-	// gigel := r.URL.Query()["tags"]
+	var user models.User = r.Context().Value("user").(models.User)
 
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	json.NewEncoder(w).Encode(types.StandardError{Message: "Can't parse params"})
-	// 	return
-	// }
-
-	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.ProcessReports(reports), "gold", filterReport))
+	err := json.NewEncoder(w).Encode(MapFilterReport(reportService.ProcessReports(reports), constants.LevelToTier[userService.AccessLevelFor(user.Address)], filterReport))
 
 	if err != nil {
 		return &types.RequestError{
@@ -125,7 +121,9 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	err = json.NewEncoder(w).Encode(filterReport(reportService.ProcessReport(newReport), "gold"))
+	var user models.User = r.Context().Value("user").(models.User)
+
+	err = json.NewEncoder(w).Encode(filterReport(reportService.ProcessReport(newReport), constants.LevelToTier[user.AccessLevel]))
 
 	if err != nil {
 		return &types.RequestError{

@@ -20,12 +20,17 @@ func Run() {
 	InitRoutes(mux)
 
 	allowedOrigins := []string{
+		"http://localhost:3002",
 		"http://localhost:3001",
 		"http://localhost:3000",
 		"http://127.0.0.1:3000",
 		"https://ngmi-dev.netlify.app",
 		"https://ngmilab.com",
 		"https://ngmi-admin-dev.netlify.app",
+		"https://skillvendor-magiccarpet-fgfcbk4udpe.ws-eu74.gitpod.io",
+		"https://3000-skillvendor-magiccarpet-fgfcbk4udpe.ws-eu74.gitpod.io",
+		"https://3000-skillvendor-magiccarpet-63atwa9jrlv.ws-eu74.gitpod.io",
+		"https://3000-skillvendor-magiccarpet-hnmd8msbdxw.ws-eu74.gitpod.io",
 	}
 
 	if env == "prod" {
