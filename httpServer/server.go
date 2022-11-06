@@ -30,6 +30,7 @@ func Run() {
 		"https://skillvendor-magiccarpet-fgfcbk4udpe.ws-eu74.gitpod.io",
 		"https://3000-skillvendor-magiccarpet-fgfcbk4udpe.ws-eu74.gitpod.io",
 		"https://3000-skillvendor-magiccarpet-63atwa9jrlv.ws-eu74.gitpod.io",
+		"https://3000-skillvendor-magiccarpet-hnmd8msbdxw.ws-eu74.gitpod.io",
 	}
 
 	if env == "prod" {
