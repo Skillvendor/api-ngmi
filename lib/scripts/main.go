@@ -7,7 +7,7 @@ import (
 
 func main() {
 	adminUsername := "Skillvendor"
-	adminPassword := "Steaua!93"
+	adminPassword := "123456`"
 
 	hashedPass, _ := auth.HashPassword(adminPassword)
 
