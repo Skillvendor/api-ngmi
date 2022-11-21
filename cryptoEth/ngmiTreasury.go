@@ -2,25 +2,40 @@ package cryptoEth
 
 import (
 	contracts "api-ngmi/contracts"
+	"api-ngmi/lib/utils"
 	"fmt"
-	"log"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
+var silverTiers = []int{2, 4}
+var goldTiers = []int{3, 5, 6}
+
+func TreasuryTierToAppTier(tier int) int {
+	if utils.ContainsInt(goldTiers, tier) {
+		return 3
+	}
+
+	if utils.ContainsInt(silverTiers, tier) {
+		return 2
+	}
+
+	return 0
+}
+
 func TreasuryTierFor(userAddress string) (int, error) {
 	client, err := ethclient.Dial(NgmiTreasury.NodeProvider)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
 
 	address := common.HexToAddress(NgmiTreasury.HexAddress)
 
 	instance, err := contracts.NewNgmiTreasury(address, client)
 	if err != nil {
-		log.Fatal("can't establish connection to NGMITreasury", err)
+		fmt.Println("can't establish connection to NGMITreasury", err)
 		return 0, err
 	}
 
@@ -44,6 +59,5 @@ func TreasuryTierFor(userAddress string) (int, error) {
 		return 0, err
 	}
 
-	fmt.Println("got the tier", tier.Int64())
-	return int(tier.Int64()), nil
+	return TreasuryTierToAppTier(int(tier.Int64())), nil
 }
