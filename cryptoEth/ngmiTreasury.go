@@ -1,6 +1,7 @@
 package cryptoEth
 
 import (
+	"api-ngmi/constants"
 	contracts "api-ngmi/contracts"
 	"api-ngmi/lib/utils"
 	"fmt"
@@ -15,14 +16,14 @@ var goldTiers = []int{3, 5, 6}
 
 func TreasuryTierToAppTier(tier int) int {
 	if utils.ContainsInt(goldTiers, tier) {
-		return 3
+		return constants.Gold
 	}
 
 	if utils.ContainsInt(silverTiers, tier) {
-		return 2
+		return constants.Silver
 	}
 
-	return 0
+	return constants.Free
 }
 
 func TreasuryTierFor(userAddress string) (int, error) {
