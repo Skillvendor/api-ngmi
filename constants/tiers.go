@@ -12,4 +12,7 @@ var LevelToTier = map[int]string{
 	1: "bronze",
 	2: "silver",
 	3: "gold",
+	4: "silver",
+	5: "gold",
+	6: "gold",
 }
