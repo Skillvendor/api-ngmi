@@ -30,7 +30,9 @@ func TierFor(address string) int {
 		fmt.Println("it is not S1/S2")
 	}
 
+	fmt.Println("Getting treasury tier")
 	tier, _ := cryptoEth.TreasuryTierFor(address)
+	fmt.Println("this is the treasury tier", tier)
 
 	if tier > 0 {
 		return tier
@@ -42,6 +44,7 @@ func TierFor(address string) int {
 func AccessLevelFor(address string) int {
 	tier, err := redis.AccessLevelFor(address)
 
+	fmt.Println("Redis error?", err)
 	if err == nil {
 		return tier
 	}
@@ -49,5 +52,6 @@ func AccessLevelFor(address string) int {
 	tier = TierFor(address)
 	redis.CacheAccessLevelFor(address, tier)
 
+	fmt.Println("I am returning this tier", tier)
 	return tier
 }

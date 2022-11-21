@@ -15,6 +15,7 @@ var silverTiers = []int{2, 4}
 var goldTiers = []int{3, 5, 6}
 
 func TreasuryTierToAppTier(tier int) int {
+	fmt.Println("This is what I got from contract", tier)
 	if utils.ContainsInt(goldTiers, tier) {
 		return constants.Gold
 	}
