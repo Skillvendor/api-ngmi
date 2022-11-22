@@ -1,7 +1,9 @@
 package cryptoEth
 
 import (
+	"api-ngmi/constants"
 	contracts "api-ngmi/contracts"
+	"api-ngmi/lib/utils"
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
