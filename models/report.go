@@ -49,7 +49,7 @@ type Report struct {
 	Assets               []string                 `pg:"assets,array" visibility:"free bronze silver gold" json:"assets,omitempty"`
 	AssetsUrls           []string                 `pg:"-" visibility:"free bronze silver gold" json:"assets_urls,omitempty"`
 	Scores               []Score                  `pg:"scores" visibility:"bronze silver gold" json:"scores,omitempty"`
-	AverageScore         float64                  `pg:"-" visibility:"free bronze silver gold" json:"average_score,omitempty"`
+	AverageScore         float64                  `pg:"-" visibility:"free bronze silver gold" json:"average_score"`
 	Tags                 []string                 `pg:"tags,array" visibility:"free bronze silver gold" json:"tags,omitempty"`
 	Chain                string                   `pg:"chain" visibility:"free bronze silver gold" json:"chain,omitempty"`
 	Socials              []map[string]interface{} `pg:"socials" visibility:"free bronze silver gold" json:"socials,omitempty"`
