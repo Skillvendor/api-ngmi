@@ -1,6 +1,7 @@
 package report
 
 import (
+	"api-ngmi/lib/utils"
 	"api-ngmi/models"
 	"api-ngmi/redis"
 	"api-ngmi/services/s3"
@@ -44,9 +45,19 @@ func MapToS3Urls(cs []models.Report) []models.Report {
 	return cs
 }
 
+func GreaterThanZero(score models.Score) bool {
+	num, err := strconv.ParseFloat(score.Content, 64)
+	if err != nil {
+		return false
+	}
+
+	return num > 0.0
+}
+
 func AddAvgScore(c models.Report) models.Report {
 	sum := 0.0
-	for _, score := range c.Scores {
+	filteredScores := utils.Filter(c.Scores, GreaterThanZero)
+	for _, score := range filteredScores {
 		score, err := strconv.ParseFloat(score.Content, 64)
 		if err == nil {
 			sum += score
@@ -55,7 +66,7 @@ func AddAvgScore(c models.Report) models.Report {
 		}
 	}
 
-	c.AverageScore = sum / float64(len(c.Scores))
+	c.AverageScore = sum / float64(len(filteredScores))
 	return c
 }
 
