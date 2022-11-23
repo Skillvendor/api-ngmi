@@ -11,21 +11,21 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
-var silverTiers = []int{2, 4}
-var goldTiers = []int{3, 5, 6}
+// var silverTiers = []int{2, 4}
+// var goldTiers = []int{3, 5, 6}
 
-func TreasuryTierToAppTier(tier int) int {
-	fmt.Println("This is what I got from contract", tier)
-	if utils.ContainsInt(goldTiers, tier) {
-		return constants.Gold
-	}
+// func TreasuryTierToAppTier(tier int) int {
+// 	fmt.Println("This is what I got from contract", tier)
+// 	if utils.ContainsInt(goldTiers, tier) {
+// 		return constants.Gold
+// 	}
 
-	if utils.ContainsInt(silverTiers, tier) {
-		return constants.Silver
-	}
+// 	if utils.ContainsInt(silverTiers, tier) {
+// 		return constants.Silver
+// 	}
 
-	return constants.Free
-}
+// 	return constants.Free
+// }
 
 func TreasuryTierFor(userAddress string) (int, error) {
 	client, err := ethclient.Dial(NgmiTreasury.NodeProvider)
@@ -61,5 +61,5 @@ func TreasuryTierFor(userAddress string) (int, error) {
 		return 0, err
 	}
 
-	return TreasuryTierToAppTier(int(tier.Int64())), nil
+	return int(tier.Int64()), nil
 }

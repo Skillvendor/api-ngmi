@@ -1,5 +1,7 @@
 package utils
 
+import "api-ngmi/models"
+
 func Max(a, b int) int {
 	if a > b {
 		return a
@@ -26,4 +28,16 @@ func ContainsInt(nums []int, num int) bool {
 	}
 
 	return false
+}
+
+func Filter(ss []models.Score, test func(models.Score) bool) []models.Score {
+	ret := []models.Score{}
+
+	for _, s := range ss {
+		if test(s) {
+			ret = append(ret, s)
+		}
+	}
+
+	return ret
 }
