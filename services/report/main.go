@@ -5,6 +5,7 @@ import (
 	"api-ngmi/models"
 	"api-ngmi/redis"
 	"api-ngmi/services/s3"
+	"math"
 	"strconv"
 
 	"github.com/ethereum/go-ethereum/log"
@@ -66,7 +67,7 @@ func AddAvgScore(c models.Report) models.Report {
 		}
 	}
 
-	c.AverageScore = sum / float64(len(filteredScores))
+	c.AverageScore = sum / math.Max(float64(len(filteredScores)), 1.0)
 	return c
 }
 
