@@ -1,4 +1,4 @@
-package main
+package scripts
 
 import (
 	"api-ngmi/models"
