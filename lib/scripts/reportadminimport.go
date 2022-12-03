@@ -1,13 +1,16 @@
-package main
+package scripts
 
 import (
 	"api-ngmi/models"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 
 	"encoding/csv"
 	"encoding/json"
+
+	"github.com/dnlo/struct2csv"
 )
 
 func createReport(data [][]string) []models.Report {
@@ -143,6 +146,19 @@ func createAdmin(data [][]string) []models.Admin {
 		}
 	}
 	return admins
+}
+
+func Export() {
+	data := models.GetAllValidPayments()
+	// buff := &bytes.Buffer{}
+
+	f, err := ioutil.TempFile("./csv", "CSV")
+	// scvWritter := csv.NewWriter(f)
+	w := struct2csv.NewWriter(f)
+	err = w.WriteStructs(data)
+	if err != nil {
+		fmt.Println("ERROR", err)
+	}
 }
 
 func Import() {

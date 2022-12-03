@@ -44,3 +44,29 @@ func GetAllPayments() []NtPayment {
 
 	return got
 }
+
+func GetAllPendingValidationPayments() []NtPayment {
+	got := []NtPayment{}
+
+	query := dbConn.DB.Model(&got).Where("transaction_verified = ?", false)
+
+	err := query.Select()
+	if err != nil {
+		fmt.Println("Can't retrieve Payments", err)
+	}
+
+	return got
+}
+
+func GetAllValidPayments() []NtPayment {
+	got := []NtPayment{}
+
+	query := dbConn.DB.Model(&got).Where("valid = ?", true)
+
+	err := query.Select()
+	if err != nil {
+		fmt.Println("Can't retrieve Payments", err)
+	}
+
+	return got
+}

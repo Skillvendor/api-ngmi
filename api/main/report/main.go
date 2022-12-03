@@ -67,6 +67,10 @@ func filterReport(r models.Report, role string) models.Report {
 				fReport.DetailedAnalysisLink = v.String()
 			case 18: // Published
 				fReport.Published = v.Bool()
+			case 19: // HasSilver
+				fReport.HasSilver = v.Bool()
+			case 20: // HasGold
+				fReport.HasGold = v.Bool()
 			}
 		}
 	}

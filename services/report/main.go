@@ -71,9 +71,25 @@ func AddAvgScore(c models.Report) models.Report {
 	return c
 }
 
+func AddTiersToReport(c models.Report) models.Report {
+	c.HasSilver = false
+	c.HasGold = false
+
+	if c.ReportDetailsLink != "" {
+		c.HasSilver = true
+	}
+
+	if c.DetailedAnalysisLink != "" {
+		c.HasGold = true
+	}
+
+	return c
+}
+
 func ProcessReport(report models.Report) models.Report {
 	report = TransformToS3Urls(report)
 	report = AddAvgScore(report)
+	report = AddTiersToReport(report)
 
 	return report
 }

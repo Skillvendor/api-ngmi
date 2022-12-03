@@ -58,6 +58,8 @@ type Report struct {
 	ReportDetailsLink    string                   `pg:"report_details_link" visibility:"silver gold" json:"report_details_link,omitempty"`
 	DetailedAnalysisLink string                   `pg:"detailed_analysis_link" visibility:"gold" json:"detailed_analysis_link,omitempty"`
 	Published            bool                     `pg:"published" visibility:"" json:"published,omitempty"`
+	HasSilver            bool                     `pg:"-" visibility:"free bronze silver gold" json:"has_silver"`
+	HasGold              bool                     `pg:"-" visibility:"free bronze silver gold" json:"has_gold"`
 }
 
 func (report *Report) Save() bool {
