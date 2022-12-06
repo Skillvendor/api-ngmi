@@ -14,20 +14,19 @@ func TierFor(address string) int {
 	found := ntPayment.Find()
 
 	if found {
-		isS1, _ := cryptoEth.HasNTS1(address)
+		isS1, _ := cryptoEth.HasNTS1(ntPayment.CitizenWallet)
+
 		if isS1 {
 			fmt.Println("Has s1")
 			return constants.Gold
 		}
 
-		isS2, _ := cryptoEth.HasNTS2(address)
+		isS2, _ := cryptoEth.HasNTS2(ntPayment.CitizenWallet)
 		if isS2 {
 			// return utils.Max(constants.Silver, tier)
 			fmt.Println("Has s2")
 			return constants.Gold
 		}
-
-		fmt.Println("it is not S1/S2")
 	}
 
 	tier, _ := cryptoEth.TreasuryTierFor(address)
