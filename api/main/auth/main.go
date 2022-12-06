@@ -33,12 +33,15 @@ type AuthResponse struct {
 }
 
 func verifySig(from, sigHex string, msg []byte) bool {
+	fmt.Println("from, sighex, msg", from, msg, sigHex)
 	sig := hexutil.MustDecode(sigHex)
 
 	msg = accounts.TextHash(msg)
 	sig[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
 
 	recovered, err := crypto.SigToPub(msg, sig)
+
+	fmt.Println("recovered", recovered, err)
 	if err != nil {
 		return false
 	}
@@ -79,8 +82,10 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 
 	msg := "I am signing my one-time nonce: " + user.Nonce
 
+	fmt.Println("User Nonce", msg)
 	signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
 
+	fmt.Println("DIDN'T SIGN", !signed)
 	if !signed {
 		return &types.RequestError{
 			StatusCode: http.StatusUnauthorized,
