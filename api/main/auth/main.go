@@ -8,7 +8,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -36,9 +35,12 @@ func verifySig(from, sigHex string, msg []byte) bool {
 	sig := hexutil.MustDecode(sigHex)
 
 	msg = accounts.TextHash(msg)
-	sig[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
+	if sig[crypto.RecoveryIDOffset] == 27 || sig[crypto.RecoveryIDOffset] == 28 {
+		sig[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
+	}
 
 	recovered, err := crypto.SigToPub(msg, sig)
+
 	if err != nil {
 		return false
 	}
@@ -49,7 +51,6 @@ func verifySig(from, sigHex string, msg []byte) bool {
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println("I AM AUTHENTICATING")
 	newSignature := SignatureData{}
 
 	err := json.NewDecoder(r.Body).Decode(&newSignature)
@@ -97,8 +98,6 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	authToken, jwtError := auth.CreateJWT(newPayload)
-
-	fmt.Println("I CREATED A NEW AUTH TOKEN", authToken)
 
 	if jwtError != nil {
 		return &types.RequestError{

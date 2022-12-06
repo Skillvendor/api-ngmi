@@ -17,7 +17,6 @@ func (contract *EthContract) GetBalanceS1(userAddress common.Address) (*big.Int,
 	}
 
 	address := common.HexToAddress(contract.HexAddress)
-
 	instance, err := contracts.NewS1citizen(address, client)
 	if err != nil {
 		log.Fatal("can't establish connection S1", err)
