@@ -13,7 +13,7 @@ type PublishedReportsCache struct {
 }
 
 var ReportCacheKey string = "published_reports"
-var ReportCacheExpiry time.Duration = time.Duration(10) * time.Second // 5 minutes
+var ReportCacheExpiry time.Duration = time.Duration(10) * time.Minute // 5 minutes
 
 func CachePublishedReports(reports []models.Report) (bool, error) {
 	ctx := context.TODO()

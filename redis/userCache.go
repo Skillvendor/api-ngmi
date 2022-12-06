@@ -13,7 +13,7 @@ type AccessLevelCache struct {
 	AccessLevel int
 }
 
-var AccessLevelCacheExpiry time.Duration = time.Duration(6) * time.Hour // 6 hours
+var AccessLevelCacheExpiry time.Duration = time.Duration(24) * time.Hour // 6 hours
 
 func CacheAccessLevelFor(address string, accessLevel int) (bool, error) {
 	ctx := context.TODO()
