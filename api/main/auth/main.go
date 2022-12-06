@@ -8,7 +8,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -33,18 +32,15 @@ type AuthResponse struct {
 }
 
 func verifySig(from, sigHex string, msg []byte) bool {
-	fmt.Println("from, sighex, msg", from, msg, sigHex)
 	sig := hexutil.MustDecode(sigHex)
 
 	msg = accounts.TextHash(msg)
 	if sig[crypto.RecoveryIDOffset] == 27 || sig[crypto.RecoveryIDOffset] == 28 {
 		sig[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
 	}
-	// sig[crypto.RecoveryIDOffset] -= 27 // Transform yellow paper V from 27/28 to 0/1
 
 	recovered, err := crypto.SigToPub(msg, sig)
 
-	fmt.Println("recovered", recovered, err)
 	if err != nil {
 		return false
 	}
@@ -55,7 +51,6 @@ func verifySig(from, sigHex string, msg []byte) bool {
 }
 
 func Authentication(w http.ResponseWriter, r *http.Request) error {
-	fmt.Println("I AM AUTHENTICATING")
 	newSignature := SignatureData{}
 
 	err := json.NewDecoder(r.Body).Decode(&newSignature)
@@ -85,10 +80,8 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 
 	msg := "I am signing my one-time nonce: " + user.Nonce
 
-	fmt.Println("User Nonce", msg)
 	signed := verifySig(user.Address, newSignature.Signature, []byte(msg))
 
-	fmt.Println("DIDN'T SIGN", !signed)
 	if !signed {
 		return &types.RequestError{
 			StatusCode: http.StatusUnauthorized,
@@ -105,8 +98,6 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	authToken, jwtError := auth.CreateJWT(newPayload)
-
-	fmt.Println("I CREATED A NEW AUTH TOKEN", authToken)
 
 	if jwtError != nil {
 		return &types.RequestError{
