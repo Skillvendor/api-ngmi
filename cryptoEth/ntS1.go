@@ -2,6 +2,7 @@ package cryptoEth
 
 import (
 	contracts "api-ngmi/contracts"
+	"fmt"
 	"log"
 	"math/big"
 
@@ -17,7 +18,7 @@ func (contract *EthContract) GetBalanceS1(userAddress common.Address) (*big.Int,
 	}
 
 	address := common.HexToAddress(contract.HexAddress)
-
+	fmt.Println("contract address", contract.HexAddress, address)
 	instance, err := contracts.NewS1citizen(address, client)
 	if err != nil {
 		log.Fatal("can't establish connection S1", err)
@@ -30,6 +31,7 @@ func (contract *EthContract) GetBalanceS1(userAddress common.Address) (*big.Int,
 		return nil, err
 	}
 
+	fmt.Println("THIS IS THE RESULT", result)
 	return result, nil
 }
 
@@ -41,6 +43,8 @@ func HasNTS1(userAddress string) (bool, error) {
 		log.Fatal("balance can't be retrieved", err)
 		return false, err
 	}
+
+	fmt.Println("This is the balance", balance, balance.Cmp(big.NewInt(0)))
 
 	return balance.Cmp(big.NewInt(0)) > 0, nil
 }
