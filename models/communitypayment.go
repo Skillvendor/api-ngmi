@@ -10,12 +10,12 @@ import (
 
 type CommunityPayment struct {
 	Id              int    `pg:"id" json:"-"`
-	CitizenWallet   string `pg:"citizen_wallet" json:"citizen_wallet" validate:"required"`
-	AccessWallet    string `pg:"access_wallet" json:"access_wallet" validate:"required"`
-	TransactionLink string `pg:"transaction_link" json:"transaction_link" validate:"required"`
+	CitizenWallet   string `pg:"citizen_wallet" json:"citizen_wallet"`
+	AccessWallet    string `pg:"access_wallet" json:"access_wallet"`
+	TransactionLink string `pg:"transaction_link" json:"transaction_link"`
 
-	DiscordHandle string `pg:"discord_handle" json:"discord_handle" validate:"required"`
-	TwitterHandle string `pg:"twitter_handle" json:"twitter_handle" validate:"required"`
+	DiscordHandle string `pg:"discord_handle" json:"discord_handle"`
+	TwitterHandle string `pg:"twitter_handle" json:"twitter_handle"`
 
 	TransactionVerified bool `pg:"transaction_verified" json:"transaction_verified"`
 	TransactionValid    bool `pg:"transaction_valid" json:"transaction_valid"`
