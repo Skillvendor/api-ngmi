@@ -42,6 +42,10 @@ func TierFor(address string) int {
 		expired := today.After(communityPayment.ExpiresAt)
 
 		if !expired {
+			if communityPayment.AccessLevel == "silver" {
+				return constants.Silver
+			}
+
 			return constants.Gold
 		}
 	}

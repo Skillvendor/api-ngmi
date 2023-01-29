@@ -13,9 +13,7 @@ type CommunityPayment struct {
 	CitizenWallet   string `pg:"citizen_wallet" json:"citizen_wallet"`
 	AccessWallet    string `pg:"access_wallet" json:"access_wallet"`
 	TransactionLink string `pg:"transaction_link" json:"transaction_link"`
-
-	DiscordHandle string `pg:"discord_handle" json:"discord_handle"`
-	TwitterHandle string `pg:"twitter_handle" json:"twitter_handle"`
+	DiscordHandle   string `pg:"discord_handle" json:"discord_handle"`
 
 	TransactionVerified bool `pg:"transaction_verified" json:"transaction_verified"`
 	TransactionValid    bool `pg:"transaction_valid" json:"transaction_valid"`
@@ -23,6 +21,7 @@ type CommunityPayment struct {
 
 	ExpiresAt     time.Time `pg:"expires_at" json:"expires_at"`
 	CommunityName string    `pg:"community_name" json:"community_name"`
+	AccessLevel   string    `pg:"access_level" json:"access_level"`
 }
 
 func (payment *CommunityPayment) Save() bool {
