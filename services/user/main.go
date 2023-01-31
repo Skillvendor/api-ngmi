@@ -14,7 +14,6 @@ func TierFor(address string) int {
 
 	found := ntPayment.Find()
 
-	fmt.Println("This is what I found", found)
 	if found {
 		isS1, _ := cryptoEth.HasNTS1(ntPayment.CitizenWallet)
 
