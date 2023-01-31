@@ -3,6 +3,7 @@ package user
 import (
 	"api-ngmi/models"
 	"api-ngmi/redis"
+	"api-ngmi/services/auth"
 	userService "api-ngmi/services/user"
 	"api-ngmi/types"
 	"encoding/json"
@@ -47,6 +48,54 @@ func Create(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	err = json.NewEncoder(w).Encode(newUser)
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error encoding user"),
+		}
+	}
+
+	return nil
+}
+
+func Update(w http.ResponseWriter, r *http.Request) error {
+	var user models.User = r.Context().Value("user").(models.User)
+
+	newUser := models.User{}
+
+	err := json.NewDecoder(r.Body).Decode(&newUser)
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("error decoding user"),
+		}
+	}
+
+	shouldSave := false
+	if newUser.Username != "" {
+		user.Username = newUser.Username
+		shouldSave = true
+	}
+
+	if newUser.Password != "" {
+		hashedPass, _ := auth.HashPassword(newUser.Password)
+		user.Password = hashedPass
+		shouldSave = true
+	}
+
+	if shouldSave {
+		saved := user.Save()
+		if !saved {
+			return &types.RequestError{
+				StatusCode: http.StatusBadRequest,
+				Err:        errors.New("can't save user"),
+			}
+		}
+	}
+
+	err = json.NewEncoder(w).Encode(user)
 
 	if err != nil {
 		return &types.RequestError{

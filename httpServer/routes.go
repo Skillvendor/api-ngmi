@@ -20,12 +20,14 @@ func InitRoutes(mux *pat.PatternServeMux) {
 	mux.Get("/api/reports/:id", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainReportCtrl.Show, -1))))
 	mux.Get("/api/reports", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckJWTToken(mainReportCtrl.Index, -1))))
 
-	// user
-	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainUserCtrl.Create)))
-
 	// auth
 	mux.Post("/api/auth/authentication", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainAuthCtrl.Authentication)))
+	mux.Post("/api/auth/authenticationEmail", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainAuthCtrl.AuthenticationEmail)))
+	mux.Post("/api/user/update", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainUserCtrl.Update)))
 	mux.Get("/api/auth/test", http.HandlerFunc(middleware.ApplyStandardMiddlewares(middleware.CheckAdminJWTToken(mainAuthCtrl.TestJWT, 1))))
+
+	// user
+	mux.Post("/api/user", http.HandlerFunc(middleware.ApplyStandardMiddlewares(mainUserCtrl.Create)))
 
 	// admin
 

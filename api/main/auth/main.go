@@ -31,6 +31,11 @@ type AuthResponse struct {
 	Token string `json:"token,omitempty"`
 }
 
+type LoginData struct {
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+
 func verifySig(from, sigHex string, msg []byte) bool {
 	sig := hexutil.MustDecode(sigHex)
 
@@ -109,6 +114,83 @@ func Authentication(w http.ResponseWriter, r *http.Request) error {
 	user.AuthToken = authToken
 	rand.Seed(time.Now().UnixNano())
 	user.Nonce = strconv.Itoa(rand.Int())
+	user.Update()
+
+	err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})
+
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error encoding token"),
+		}
+	}
+
+	// Finally, we set the client cookie for "Authorization" as the JWT we just generated
+	// we also set an expiry time
+	http.SetCookie(w, &http.Cookie{
+		Name:    "Authorization",
+		Value:   authToken,
+		Expires: auth.AuthTokenExpirationTime(),
+	})
+
+	return nil
+}
+
+func AuthenticationEmail(w http.ResponseWriter, r *http.Request) error {
+	newLogin := LoginData{}
+
+	err := json.NewDecoder(r.Body).Decode(&newLogin)
+	if err != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusInternalServerError,
+			Err:        errors.New("error decoding body"),
+		}
+	}
+
+	if newLogin.Username == "" {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("no address provided"),
+		}
+	}
+
+	user := models.User{Username: newLogin.Username}
+	found := user.FindByUsername()
+
+	if !found {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("user does not exist"),
+		}
+	}
+
+	okPass := auth.CheckPasswordHash(newLogin.Password, user.Password)
+
+	if !okPass {
+		return &types.RequestError{
+			StatusCode: http.StatusUnauthorized,
+			Err:        errors.New("password invalid"),
+		}
+	}
+
+	userAccessLevel := userService.AccessLevelFor(user.Address)
+
+	newPayload := auth.JWTPayload{
+		Address:        user.Address,
+		AccessLevel:    userAccessLevel,
+		ExpirationTime: auth.AuthTokenExpirationTime(),
+	}
+
+	authToken, jwtError := auth.CreateJWT(newPayload)
+
+	if jwtError != nil {
+		return &types.RequestError{
+			StatusCode: http.StatusBadRequest,
+			Err:        errors.New("can't generate token"),
+		}
+	}
+
+	user.AuthToken = authToken
 	user.Update()
 
 	err = json.NewEncoder(w).Encode(AuthResponse{Token: authToken})

@@ -21,3 +21,12 @@ create trigger
 on users
 for each row execute
   procedure moddatetime(updated_at);
+
+ALTER TABLE users
+ADD username text UNIQUE;
+
+ALTER TABLE users
+ADD password text;
+
+CREATE INDEX idx_users_username
+ON users(username);
