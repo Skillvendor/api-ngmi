@@ -13,7 +13,7 @@ type AccessLevelCache struct {
 	AccessLevel int
 }
 
-var AccessLevelCacheExpiry time.Duration = time.Duration(24) * time.Hour // 6 hours
+var AccessLevelCacheExpiry time.Duration = time.Duration(24) * time.Hour // 24 hours
 
 func CacheAccessLevelFor(address string, accessLevel int) (bool, error) {
 	ctx := context.TODO()
@@ -55,6 +55,14 @@ func PurgeAccessLevelCacheFor(address string) (bool, error) {
 	if err := Cache.Delete(ctx, key); err != nil {
 		return false, err
 	}
+
+	return true, nil
+}
+
+func PurgeAccessLevelCacheDBFor(address string) (bool, error) {
+	key := fmt.Sprintf("accessLevel-%s", address)
+
+	RDB.Del(context.Background(), key)
 
 	return true, nil
 }

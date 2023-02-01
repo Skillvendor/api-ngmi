@@ -145,7 +145,7 @@ func Show(w http.ResponseWriter, r *http.Request) error {
 func ResetAccessLevelCache(w http.ResponseWriter, r *http.Request) error {
 	var user models.User = r.Context().Value("user").(models.User)
 
-	_, err := redis.PurgeAccessLevelCacheFor(user.Address)
+	_, err := redis.PurgeAccessLevelCacheDBFor(user.Address)
 
 	if err != nil {
 		return &types.RequestError{
