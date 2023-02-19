@@ -60,10 +60,15 @@ func Create(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+type LoginData struct {
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+
 func Update(w http.ResponseWriter, r *http.Request) error {
 	var user models.User = r.Context().Value("user").(models.User)
 
-	newUser := models.User{}
+	newUser := LoginData{}
 
 	err := json.NewDecoder(r.Body).Decode(&newUser)
 
