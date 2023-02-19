@@ -86,7 +86,7 @@ func Update(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	if shouldSave {
-		saved := user.Save()
+		saved := user.UpdateEmailPass()
 		if !saved {
 			return &types.RequestError{
 				StatusCode: http.StatusBadRequest,

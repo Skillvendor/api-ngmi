@@ -40,6 +40,15 @@ func (user *User) Update() bool {
 	return err == nil
 }
 
+func (user *User) UpdateEmailPass() bool {
+	_, err := dbConn.DB.Model(user).
+		Column("username", "password").
+		WherePK().
+		Update()
+
+	return err == nil
+}
+
 func (user *User) FindByUsername() bool {
 	err := dbConn.DB.Model(user).Where("username = ?", user.Username).First()
 
