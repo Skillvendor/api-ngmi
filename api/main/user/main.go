@@ -8,7 +8,6 @@ import (
 	"api-ngmi/types"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -79,7 +78,6 @@ func Update(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	fmt.Println("This is the newuser", newUser)
 	shouldSave := false
 	if newUser.Username != "" {
 		user.Username = newUser.Username
@@ -88,13 +86,11 @@ func Update(w http.ResponseWriter, r *http.Request) error {
 
 	if newUser.Password != "" {
 		hashedPass, _ := auth.HashPassword(newUser.Password)
-		fmt.Println("This is the hashedPass", hashedPass, newUser.Password)
 		user.Password = hashedPass
 		shouldSave = true
 	}
 
 	if shouldSave {
-		fmt.Println("Before Updating", user)
 		saved := user.UpdateEmailPass()
 		if !saved {
 			return &types.RequestError{
