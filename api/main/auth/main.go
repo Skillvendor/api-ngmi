@@ -166,7 +166,8 @@ func AuthenticationEmail(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	hashedPasss, _ := auth.HashPassword(newLogin.Password)
-	fmt.Println("These are the passes", newLogin.Password, user.Password, hashedPasss)
+	fmt.Println("These are the passes", newLogin.Password, user.Password)
+	fmt.Println("THe new hash", hashedPasss)
 	okPass := auth.CheckPasswordHash(newLogin.Password, user.Password)
 
 	if !okPass {
