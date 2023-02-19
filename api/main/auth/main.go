@@ -8,6 +8,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"strconv"
@@ -164,6 +165,8 @@ func AuthenticationEmail(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
+	hashedPasss, _ := auth.HashPassword(newLogin.Password)
+	fmt.Println("These are the passes", newLogin.Password, user.Password, hashedPasss)
 	okPass := auth.CheckPasswordHash(newLogin.Password, user.Password)
 
 	if !okPass {
