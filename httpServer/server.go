@@ -27,6 +27,8 @@ func Run() {
 		"https://ngmi-dev.netlify.app",
 		"https://ngmilab.com",
 		"https://ngmi-admin-dev.netlify.app",
+		"https://nft-research-lab.netlify.app",
+		"https://nft-research-lab-admin.netlify.app",
 		"*",
 	}
 
